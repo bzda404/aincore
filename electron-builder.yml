@@ -1,0 +1,56 @@
+appId: com.hearth.app
+productName: Hearth
+publish:
+  provider: github
+  owner: bzda404
+  repo: hearth
+  releaseType: release
+directories:
+  buildResources: build
+  output: ./dist
+files:
+  - filter:
+      - '!node_modules/**/*'
+      - '!src/**/*'
+      - 'out/**/*'
+      - static/**/*
+extraResources:
+  - from: resources/binaries
+    to: binaries
+    filter:
+      - '**/*'
+win:
+  executableName: hearth
+  artifactName: 'hearth-win-${arch}-${version}.${ext}'
+  target:
+    - target: nsis
+    - target: zip
+  icon: static/icon.png
+  signAndEditExecutable: false
+nsis:
+  artifactName: 'hearth-win-${arch}-${version}-setup.${ext}'
+  shortcutName: Hearth
+  uninstallDisplayName: Hearth
+  createDesktopShortcut: false
+  createStartMenuShortcut: true
+mac:
+  artifactName: 'hearth-mac-${arch}-${version}.${ext}'
+  entitlementsInherit: build/mac/entitlements.mac.plist
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  notarize: false
+  target:
+    - dmg
+    - zip
+  icon: static/icon.png
+dmg:
+  artifactName: 'hearth-mac-${arch}-${version}.${ext}'
+linux:
+  artifactName: 'hearth-linux-${version}.${ext}'
+  executableName: hearth
+  description: '本地 AI 算力平台中枢'
+  maintainer: 'Hearth'
+  category: 'Utility'
+  target:
+    - AppImage
+    - deb

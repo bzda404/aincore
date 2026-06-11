@@ -1,0 +1,157 @@
+/*
+ * MindVault Core — Global styles
+ * CSS reset, typography base, utility classes, route transitions.
+ */
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--mv-font-family);
+  font-size: var(--mv-font-md);
+  color: var(--mv-text-primary);
+  background: var(--mv-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Route transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity var(--mv-transition-fast);
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Utility: text truncation */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Utility: flex centering */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Utility: section titles (reused across views) */
+.section-title {
+  font-size: var(--mv-font-lg);
+  font-weight: 600;
+  color: var(--mv-text-primary);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--mv-space-md);
+}
+
+/* Utility: panel card */
+.panel {
+  background: var(--mv-bg-primary);
+  border: 1px solid var(--mv-border);
+  border-radius: var(--mv-radius-md);
+  padding: var(--mv-space-lg);
+}
+
+/* Utility: data row (for list items) */
+.data-row {
+  display: flex;
+  align-items: center;
+  gap: var(--mv-space-md);
+  padding: var(--mv-space-sm) 0;
+  border-bottom: 1px solid var(--mv-border);
+}
+.data-row:last-child {
+  border-bottom: none;
+}
+
+.row-main {
+  flex: 1;
+  min-width: 0;
+}
+.row-title {
+  font-size: var(--mv-font-md);
+  font-weight: 500;
+}
+.row-meta {
+  font-size: var(--mv-font-sm);
+  color: var(--mv-text-tertiary);
+  margin-left: var(--mv-space-sm);
+}
+
+.row-list .data-row {
+  padding: var(--mv-space-sm) var(--mv-space-xs);
+}
+.row-list.compact .data-row {
+  padding: 6px var(--mv-space-xs);
+}
+
+/* Utility: empty state */
+.empty {
+  text-align: center;
+  padding: var(--mv-space-2xl) var(--mv-space-lg);
+  color: var(--mv-text-tertiary);
+  font-size: var(--mv-font-sm);
+}
+
+/* Utility: state tags (compact inline) */
+.state-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: var(--mv-font-xs);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.state-tag.ready {
+  background: var(--mv-primary-light);
+  color: var(--mv-primary-hover);
+}
+.state-tag.danger {
+  background: var(--mv-danger-light);
+  color: var(--mv-danger);
+}
+.state-tag.idle {
+  background: var(--mv-bg-tertiary);
+  color: var(--mv-text-tertiary);
+}

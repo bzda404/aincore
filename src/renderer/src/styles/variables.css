@@ -1,0 +1,137 @@
+/*
+ * MindVault Design Tokens
+ * CSS custom properties for the entire Core admin UI.
+ */
+
+:root {
+  /* Brand */
+  --mv-primary: #21b56f;
+  --mv-primary-hover: #168653;
+  --mv-primary-light: rgba(33, 181, 111, 0.12);
+  --mv-danger: #d93025;
+  --mv-danger-light: rgba(255, 105, 105, 0.12);
+  --mv-warning: #f59e0b;
+  --mv-warning-light: rgba(245, 158, 11, 0.12);
+  --mv-info: #3b82f6;
+  --mv-info-light: rgba(59, 130, 246, 0.12);
+
+  /* Text */
+  --mv-text-primary: #1f2328;
+  --mv-text-secondary: rgba(0, 0, 0, 0.58);
+  --mv-text-tertiary: rgba(0, 0, 0, 0.45);
+  --mv-text-disabled: rgba(0, 0, 0, 0.28);
+  --mv-text-inverse: #ffffff;
+
+  /* Background */
+  --mv-bg-primary: #ffffff;
+  --mv-bg-secondary: #fafafa;
+  --mv-bg-tertiary: #f2f2f2;
+  --mv-bg-overlay: rgba(0, 0, 0, 0.42);
+
+  /* Border */
+  --mv-border: rgba(0, 0, 0, 0.08);
+  --mv-border-strong: rgba(0, 0, 0, 0.14);
+  --mv-border-primary: rgba(33, 181, 111, 0.24);
+
+  /* Sizing */
+  --mv-nav-width: 48px;
+  --mv-header-height: 58px;
+  --mv-radius-sm: 6px;
+  --mv-radius-md: 8px;
+  --mv-radius-lg: 10px;
+  --mv-radius-full: 9999px;
+
+  /* Spacing */
+  --mv-space-xs: 4px;
+  --mv-space-sm: 8px;
+  --mv-space-md: 12px;
+  --mv-space-lg: 16px;
+  --mv-space-xl: 20px;
+  --mv-space-2xl: 24px;
+
+  /* Typography */
+  --mv-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  --mv-font-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  --mv-font-xs: 11px;
+  --mv-font-sm: 12px;
+  --mv-font-md: 13px;
+  --mv-font-lg: 15px;
+  --mv-font-xl: 17px;
+  --mv-font-2xl: 20px;
+
+  /* Shadows */
+  --mv-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --mv-shadow-popup: 0 18px 52px rgba(0, 0, 0, 0.25);
+
+  /* Transitions */
+  --mv-transition-fast: 0.15s ease;
+  --mv-transition-normal: 0.25s ease;
+}
+
+/* ============================================================
+ * Dark theme (explicit toggle)
+ * ============================================================ */
+[data-theme="dark"] {
+  --mv-primary: #2fd97e;
+  --mv-primary-hover: #21b56f;
+  --mv-primary-light: rgba(47, 217, 126, 0.15);
+  --mv-danger: #f87171;
+  --mv-danger-light: rgba(248, 113, 113, 0.15);
+  --mv-warning: #fbbf24;
+  --mv-warning-light: rgba(251, 191, 36, 0.15);
+  --mv-info: #60a5fa;
+  --mv-info-light: rgba(96, 165, 250, 0.15);
+
+  --mv-text-primary: #e6e6e6;
+  --mv-text-secondary: rgba(255, 255, 255, 0.65);
+  --mv-text-tertiary: rgba(255, 255, 255, 0.45);
+  --mv-text-disabled: rgba(255, 255, 255, 0.28);
+  --mv-text-inverse: #1f2328;
+
+  --mv-bg-primary: #1a1a1a;
+  --mv-bg-secondary: #222222;
+  --mv-bg-tertiary: #2a2a2a;
+  --mv-bg-overlay: rgba(0, 0, 0, 0.6);
+
+  --mv-border: rgba(255, 255, 255, 0.1);
+  --mv-border-strong: rgba(255, 255, 255, 0.18);
+  --mv-border-primary: rgba(47, 217, 126, 0.3);
+
+  --mv-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --mv-shadow-popup: 0 18px 52px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+ * Auto dark mode from OS preference (when no explicit theme set)
+ * ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --mv-primary: #2fd97e;
+    --mv-primary-hover: #21b56f;
+    --mv-primary-light: rgba(47, 217, 126, 0.15);
+    --mv-danger: #f87171;
+    --mv-danger-light: rgba(248, 113, 113, 0.15);
+    --mv-warning: #fbbf24;
+    --mv-warning-light: rgba(251, 191, 36, 0.15);
+    --mv-info: #60a5fa;
+    --mv-info-light: rgba(96, 165, 250, 0.15);
+
+    --mv-text-primary: #e6e6e6;
+    --mv-text-secondary: rgba(255, 255, 255, 0.65);
+    --mv-text-tertiary: rgba(255, 255, 255, 0.45);
+    --mv-text-disabled: rgba(255, 255, 255, 0.28);
+    --mv-text-inverse: #1f2328;
+
+    --mv-bg-primary: #1a1a1a;
+    --mv-bg-secondary: #222222;
+    --mv-bg-tertiary: #2a2a2a;
+    --mv-bg-overlay: rgba(0, 0, 0, 0.6);
+
+    --mv-border: rgba(255, 255, 255, 0.1);
+    --mv-border-strong: rgba(255, 255, 255, 0.18);
+    --mv-border-primary: rgba(47, 217, 126, 0.3);
+
+    --mv-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --mv-shadow-popup: 0 18px 52px rgba(0, 0, 0, 0.5);
+  }
+}

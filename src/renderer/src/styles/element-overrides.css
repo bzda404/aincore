@@ -1,0 +1,120 @@
+/*
+ * Element Plus theme overrides
+ * Align Element Plus components with MindVault design tokens.
+ */
+
+:root {
+  --el-color-primary: var(--mv-primary);
+  --el-color-primary-light-3: #5ccf91;
+  --el-color-primary-light-5: #90dab5;
+  --el-color-primary-light-7: #c3e8d7;
+  --el-color-primary-light-8: #d9f0e6;
+  --el-color-primary-light-9: #ecf8f2;
+  --el-color-primary-dark-2: #1a9159;
+
+  --el-color-success: var(--mv-primary);
+  --el-color-warning: var(--mv-warning);
+  --el-color-danger: var(--mv-danger);
+  --el-color-info: var(--mv-info);
+
+  --el-border-radius-base: var(--mv-radius-sm);
+  --el-border-radius-small: 4px;
+  --el-border-radius-round: var(--mv-radius-full);
+
+  --el-font-family: var(--mv-font-family);
+  --el-font-size-base: var(--mv-font-md);
+
+  --el-border-color: var(--mv-border);
+  --el-border-color-light: var(--mv-border);
+  --el-border-color-lighter: rgba(0, 0, 0, 0.04);
+
+  --el-fill-color-blank: var(--mv-bg-primary);
+  --el-bg-color: var(--mv-bg-primary);
+  --el-bg-color-page: var(--mv-bg-secondary);
+}
+
+/* Element Plus dark mode overrides */
+[data-theme="dark"] {
+  --el-color-primary: var(--mv-primary);
+  --el-color-primary-light-3: #1a7a4a;
+  --el-color-primary-light-5: #145e39;
+  --el-color-primary-light-7: #0f472b;
+  --el-color-primary-light-8: #0c3822;
+  --el-color-primary-light-9: #092c1b;
+  --el-color-primary-dark-2: #3de88e;
+
+  --el-color-success: var(--mv-primary);
+  --el-color-warning: var(--mv-warning);
+  --el-color-danger: var(--mv-danger);
+  --el-color-info: var(--mv-info);
+
+  --el-border-color: var(--mv-border);
+  --el-border-color-light: var(--mv-border);
+  --el-border-color-lighter: rgba(255, 255, 255, 0.06);
+
+  --el-fill-color-blank: var(--mv-bg-primary);
+  --el-bg-color: var(--mv-bg-primary);
+  --el-bg-color-page: var(--mv-bg-secondary);
+  --el-bg-color-overlay: var(--mv-bg-secondary);
+
+  --el-text-color-primary: var(--mv-text-primary);
+  --el-text-color-regular: var(--mv-text-secondary);
+  --el-text-color-secondary: var(--mv-text-tertiary);
+  --el-text-color-placeholder: var(--mv-text-disabled);
+
+  --el-fill-color-light: var(--mv-bg-tertiary);
+  --el-fill-color: var(--mv-bg-secondary);
+  --el-fill-color-dark: var(--mv-bg-tertiary);
+
+  --el-mask-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Compact button sizing for desktop */
+.el-button--small {
+  --el-button-size: 24px;
+  padding: 4px 12px;
+  font-size: var(--mv-font-sm);
+}
+
+.el-button {
+  --el-button-size: 28px;
+  font-size: var(--mv-font-md);
+}
+
+/* Compact tags */
+.el-tag {
+  font-size: var(--mv-font-xs);
+  --el-tag-border-radius: 4px;
+}
+
+/* Compact table */
+.el-table {
+  --el-table-font-size: var(--mv-font-sm);
+  --el-table-header-bg-color: var(--mv-bg-secondary);
+  --el-table-border-color: var(--mv-border);
+}
+
+/* Dialog overrides for popups */
+.el-dialog {
+  --el-dialog-border-radius: var(--mv-radius-lg);
+}
+
+/* Card shadows */
+.el-card {
+  --el-card-border-radius: var(--mv-radius-md);
+  border: 1px solid var(--mv-border);
+  box-shadow: none;
+}
+.el-card:hover {
+  box-shadow: var(--mv-shadow-card);
+}
+
+/* Statistic compact */
+.el-statistic__number {
+  font-size: var(--mv-font-xl);
+  font-weight: 600;
+}
+.el-statistic__head {
+  font-size: var(--mv-font-xs);
+  color: var(--mv-text-tertiary);
+}
