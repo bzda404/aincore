@@ -1,3 +1,4 @@
+npmRebuild: false
 appId: com.hearth.app
 productName: Hearth
 publish:
