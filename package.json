@@ -1,7 +1,7 @@
 {
   "name": "hearth",
   "version": "1.0.0-rc.1",
-  "description": "Hearth — 本地 AI 算力平台中枢",
+  "description": "Hearth \u2014 \u672c\u5730 AI \u7b97\u529b\u5e73\u53f0\u4e2d\u67a2",
   "main": "./out/main/index.js",
   "private": true,
   "homepage": "https://github.com/bzda404/hearth",
@@ -12,12 +12,12 @@
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
-    "build:mac": "electron-rebuild && electron-vite build && electron-builder --mac --publish never",
-    "build:mac:x64": "electron-rebuild && electron-vite build && electron-builder --mac --x64 --publish never",
-    "build:mac:arm64": "electron-rebuild && electron-vite build && electron-builder --mac --arm64 --publish never",
-    "build:win:x64": "electron-rebuild && electron-vite build && electron-builder --win --x64 --publish never",
-    "build:win:arm64": "electron-rebuild && electron-vite build && electron-builder --win --arm64 --publish never",
-    "build:linux": "electron-rebuild && electron-vite build && electron-builder --linux --publish never",
+    "build:mac": "electron-vite build && electron-builder --mac --publish never",
+    "build:mac:x64": "electron-vite build && electron-builder --mac --x64 --publish never",
+    "build:mac:arm64": "electron-vite build && electron-builder --mac --arm64 --publish never",
+    "build:win:x64": "electron-vite build && electron-builder --win --x64 --publish never",
+    "build:win:arm64": "electron-vite build && electron-builder --win --arm64 --publish never",
+    "build:linux": "electron-vite build && electron-builder --linux --publish never",
     "start": "electron-vite preview",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
@@ -29,7 +29,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
-    "better-sqlite3": "^12.2.0",
+    "better-sqlite3": "12.10.0",
     "electron-log": "^5.4.4",
     "electron-store": "^11.0.2",
     "electron-updater": "^6.8.3",
@@ -49,7 +49,7 @@
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/coverage-v8": "^3.2.6",
     "cross-env": "^10.1.0",
-    "electron": "^42.1.0",
+    "electron": "38.4.0",
     "electron-builder": "^26.8.1",
     "electron-vite": "^5.0.0",
     "eslint": "^9.39.4",
@@ -66,7 +66,10 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "better-sqlite3"
+      "better-sqlite3",
+      "electron",
+      "esbuild",
+      "electron-winstaller"
     ]
   }
 }

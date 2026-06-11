@@ -6,6 +6,8 @@ on:
 
 permissions:
   contents: write
+  attestations: write
+  id-token: write
 
 jobs:
   build:
@@ -52,6 +54,10 @@ jobs:
         run: pnpm run build:win:${{ matrix.arch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/*'
       - uses: actions/upload-artifact@v4
         with:
           name: hearth-${{ matrix.platform }}-${{ matrix.arch }}
@@ -65,6 +71,10 @@ jobs:
         with:
           path: dist
           merge-multiple: true
+      - name: Attest release artifacts
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/*'
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/*
