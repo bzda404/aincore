@@ -74,7 +74,16 @@ jobs:
       - name: Attest release artifacts
         uses: actions/attest-build-provenance@v2
         with:
-          subject-path: 'dist/*'
+          subject-path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/*.exe
+            dist/*.nupkg
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.rpm
+            dist/*.snap
+            dist/*.yml
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/*
