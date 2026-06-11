@@ -3,6 +3,7 @@
  */
 import { getLoadedEngine } from '../engine/llamaCpp'
 import { recordInferenceTelemetry } from '../corePolicy'
+import { maybeInjectProfile } from './profileInjector'
 
 type RegisterRoute = (method: string, path: string, handler: (params: Record<string, unknown>) => Promise<unknown>) => void
 
@@ -23,7 +24,8 @@ export function registerOpenAIRoutes(registerRoute: RegisterRoute): void {
 
   // 聊天补全
   registerRoute('POST', '/v1/chat/completions', async(params) => {
-    return forwardInferenceRequest('/v1/chat/completions', params, '推理请求失败')
+    const injected = maybeInjectProfile(params)
+    return forwardInferenceRequest('/v1/chat/completions', injected, '推理请求失败')
   })
 
   // 文本补全

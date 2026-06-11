@@ -39,6 +39,78 @@
       </div>
     </div>
 
+    <!-- AI Memory -->
+    <div class="panel" style="margin-top: var(--mv-space-lg)">
+      <span class="section-title">{{ t('settings.profile.title') }}</span>
+      <p class="section-desc">{{ t('settings.profile.subtitle') }}</p>
+      <div class="info-list">
+        <div class="info-row">
+          <span class="info-label">{{ t('settings.profile.displayName') }}</span>
+          <span class="info-value">
+            <el-input
+              v-model="profileForm.display_name"
+              :placeholder="t('settings.profile.displayNamePlaceholder')"
+              size="small"
+              maxlength="100"
+              style="width: 200px"
+            />
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">{{ t('settings.profile.language') }}</span>
+          <span class="info-value">
+            <el-select v-model="profileForm.language" size="small" style="width: 200px">
+              <el-option value="" :label="t('settings.profile.languageAuto')" />
+              <el-option value="zh-CN" label="中文 (Chinese)" />
+              <el-option value="en" label="English" />
+              <el-option value="ja" label="日本語 (Japanese)" />
+              <el-option value="ko" label="한국어 (Korean)" />
+              <el-option value="fr" label="Français (French)" />
+              <el-option value="de" label="Deutsch (German)" />
+              <el-option value="es" label="Español (Spanish)" />
+              <el-option value="pt" label="Português (Portuguese)" />
+              <el-option value="ru" label="Русский (Russian)" />
+            </el-select>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">{{ t('settings.profile.style') }}</span>
+          <span class="info-value">
+            <el-select v-model="profileForm.communication_style" size="small" style="width: 200px">
+              <el-option value="" :label="t('settings.profile.styleAuto')" />
+              <el-option value="concise" :label="t('settings.profile.styleConcise')" />
+              <el-option value="formal" :label="t('settings.profile.styleFormal')" />
+              <el-option value="technical" :label="t('settings.profile.styleTechnical')" />
+              <el-option value="casual" :label="t('settings.profile.styleCasual')" />
+            </el-select>
+          </span>
+        </div>
+        <div class="info-row" style="align-items: flex-start">
+          <span class="info-label" style="margin-top: 6px">{{ t('settings.profile.customInstructions') }}</span>
+          <span class="info-value" style="flex: 1; margin-left: var(--mv-space-md)">
+            <el-input
+              v-model="profileForm.custom_instructions"
+              type="textarea"
+              :rows="3"
+              :placeholder="t('settings.profile.customInstructionsPlaceholder')"
+              maxlength="5000"
+              show-word-limit
+            />
+          </span>
+        </div>
+        <div class="info-row" style="justify-content: flex-end">
+          <el-button
+            size="small"
+            type="primary"
+            :loading="profileStore.isSaving"
+            @click="saveProfile"
+          >
+            {{ t('common.save') }}
+          </el-button>
+        </div>
+      </div>
+    </div>
+
     <!-- GitHub Integration -->
     <div class="panel" style="margin-top: var(--mv-space-lg)">
       <span class="section-title">{{ t('settings.github') }}</span>
@@ -75,15 +147,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import { useSystemStore } from '../stores/systemStore'
 import { useModelStore } from '../stores/modelStore'
+import { useProfileStore } from '../stores/profileStore'
 
 const { t } = useI18n()
 const systemStore = useSystemStore()
 const modelStore = useModelStore()
+const profileStore = useProfileStore()
+
+const profileForm = reactive({
+  display_name: '',
+  language: '',
+  communication_style: '',
+  custom_instructions: '',
+})
 
 type ThemeMode = 'light' | 'dark' | 'system'
 const currentTheme = ref<ThemeMode>('system')
@@ -101,7 +182,19 @@ onMounted(async () => {
     const status = await window.hub.getGithubTokenStatus()
     hasGithubToken.value = status.configured
   } catch { /* silent */ }
+
+  // Load user profile
+  await profileStore.fetchProfile()
+  const p = profileStore.profile
+  profileForm.display_name = p.display_name
+  profileForm.language = p.language
+  profileForm.communication_style = p.communication_style
+  profileForm.custom_instructions = p.custom_instructions
 })
+
+async function saveProfile() {
+  await profileStore.saveProfile({ ...profileForm })
+}
 
 function onThemeChange(theme: string | number | boolean) {
   const t = theme as ThemeMode
@@ -168,6 +261,7 @@ async function clearGithubToken() {
 .info-row:last-child { border-bottom: none; }
 .info-label { color: var(--mv-text-secondary); }
 .info-value { color: var(--mv-text-primary); font-weight: 500; }
+.section-desc { color: var(--mv-text-secondary); font-size: var(--mv-font-xs); margin: var(--mv-space-xs) 0 0; }
 .mono { font-family: var(--mv-font-mono); font-size: var(--mv-font-xs); }
 .token-input-group { display: flex; gap: var(--mv-space-sm); align-items: center; }
 </style>

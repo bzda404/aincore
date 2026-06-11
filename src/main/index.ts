@@ -19,6 +19,7 @@ import { startScheduler, stopScheduler, unloadAll, preloadResidentModels } from 
 import { DEFAULT_RECOMMENDED_MODEL, registerDownloadedModel } from './models/defaultModel'
 import { configureSentinel, getSentinelConfig, loadAuditLog, getAuditEntries, clearAuditLog } from './privacy/sentinel'
 import { initAuditDb, queryAuditLog, getAuditStats, exportAuditLog, getDistinctClients } from './store/auditDb'
+import { initProfileDb, getUserProfile, updateUserProfile } from './store/profileDb'
 import { resolveOAuthConsent, getPendingConsentCount } from './oauth/consent'
 import { getAppsWithStatus, getNotesManifest } from './apps/manager'
 import { fetchMarketplaceApps, fetchAppDetail, fetchAppDownloadUrl, setGithubToken, getGithubToken, initTokenPersistence, persistGithubToken, clearMarketplaceCache } from './apps/registry'
@@ -326,6 +327,17 @@ function registerAuthIpcHandlers(): void {
   ipcMain.handle('hub:oauth:resolve-consent', async(_event, requestId: string, grantedScopes: string[] | null) => {
     resolveOAuthConsent(requestId, grantedScopes)
     return { success: true }
+  })
+
+  // ==================================================================
+  // User profile handlers
+  // ==================================================================
+  ipcMain.handle('hub:profile:get', async () => {
+    return getUserProfile()
+  })
+
+  ipcMain.handle('hub:profile:update', async (_event, partial: Record<string, unknown>) => {
+    return updateUserProfile(partial)
   })
 
   // ==================================================================

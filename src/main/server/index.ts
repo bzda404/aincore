@@ -12,6 +12,7 @@ import { registerModelRoutes } from './models'
 import { registerAuthRoutes } from './auth'
 import { registerKnowledgeRoutes } from './knowledge'
 import { registerOAuthRoutes } from '../oauth/server'
+import { registerProfileRoutes } from './profile'
 import { getPeerCredentials, type PeerCredentials } from '../peerAuth'
 import { SOCKET_PATH } from './transport'
 import { logAccessDecision } from './access'
@@ -121,6 +122,7 @@ export async function startServer(): Promise<void> {
   registerAuthRoutes(registerRoute)
   registerKnowledgeRoutes(registerRoute)
   registerOAuthRoutes(registerRoute)
+  registerProfileRoutes(registerRoute)
 
   return new Promise((resolve, reject) => {
     // 清理旧的 socket 文件
@@ -298,6 +300,8 @@ const PUBLIC_METHODS = new Set([
   'oauth.revoke',
   'oauth.revoke_client',
   'oauth.introspect',
+  'profile.get',
+  'profile.update',
   'GET:/health',
   'GET:/version',
   'status',

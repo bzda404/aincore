@@ -173,7 +173,24 @@
     "githubTokenPlaceholder": "ghp_xxxx",
     "githubTokenHint": "可选。将 API 限流从 60 提升至 5,000 次/小时。",
     "githubTokenSaved": "GitHub 令牌已保存。",
-    "githubTokenCleared": "GitHub 令牌已清除。"
+    "githubTokenCleared": "GitHub 令牌已清除。",
+    "profile": {
+      "title": "AI 记忆",
+      "subtitle": "在所有应用中个性化 AI 回复",
+      "displayName": "显示名称",
+      "displayNamePlaceholder": "你的名字",
+      "language": "语言",
+      "languageAuto": "自动检测",
+      "style": "沟通风格",
+      "styleAuto": "自动",
+      "styleConcise": "简洁",
+      "styleFormal": "正式",
+      "styleTechnical": "技术",
+      "styleCasual": "随意",
+      "customInstructions": "自定义指令",
+      "customInstructionsPlaceholder": "给 AI 的额外偏好说明...",
+      "saved": "个人资料已保存。"
+    }
   },
   "popups": {
     "auth": {

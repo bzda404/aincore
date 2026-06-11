@@ -8,6 +8,7 @@ import { listModels, getModel, deleteModel, addModel } from '../store/modelDb'
 import { getLoadedEngine, loadModel, unloadModel } from '../engine/llamaCpp'
 import { SOCKET_PATH, TRANSPORT } from './transport'
 import { ensureDefaultLightweightModelLoaded, getDefaultLightweightModelStatus, getInferenceTelemetry, getModelLoadGuard, parseParameterSizeToBillions, recordInferenceTelemetry } from '../corePolicy'
+import { maybeInjectProfile } from './profileInjector'
 import type { ModelInfo } from '../../shared/types'
 
 type RegisterRoute = (method: string, path: string, handler: (params: Record<string, unknown>) => Promise<unknown>) => void
@@ -101,7 +102,8 @@ export function registerModelRoutes(registerRoute: RegisterRoute): void {
   }
 
   const chatCompletions = async(params: Record<string, unknown>) => {
-    return forwardInferenceRequest('/v1/chat/completions', params, '推理请求失败')
+    const injected = maybeInjectProfile(params)
+    return forwardInferenceRequest('/v1/chat/completions', injected, '推理请求失败')
   }
 
   const completions = async(params: Record<string, unknown>) => {

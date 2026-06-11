@@ -127,10 +127,15 @@ export function initModelDb(): void {
     memDb = new Map()
     for (const t of ['models','apps','authorizations','sessions',
                      'audit_log','oauth_clients','oauth_codes',
-                     'oauth_tokens','installed_apps']) {
+                     'oauth_tokens','installed_apps','user_profile']) {
       memDb.set(t, [])
     }
-    console.log('[Model DB] 内存 fallback 就绪 (9 个表)')
+    // Insert default user_profile row for memDb
+    memDb.get('user_profile')!.push({
+      id: 1, display_name: '', language: '', communication_style: '',
+      custom_instructions: '', preferences: '{}', updated_at: new Date().toISOString(),
+    })
+    console.log('[Model DB] 内存 fallback 就绪 (10 个表)')
   }
 }
 

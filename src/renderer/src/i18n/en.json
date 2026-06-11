@@ -179,7 +179,24 @@
     "githubTokenPlaceholder": "ghp_xxxx",
     "githubTokenHint": "Optional. Raises API rate limit from 60 to 5,000 req/h.",
     "githubTokenSaved": "GitHub token saved.",
-    "githubTokenCleared": "GitHub token cleared."
+    "githubTokenCleared": "GitHub token cleared.",
+    "profile": {
+      "title": "AI Memory",
+      "subtitle": "Personalize AI responses across all apps",
+      "displayName": "Display Name",
+      "displayNamePlaceholder": "Your name",
+      "language": "Language",
+      "languageAuto": "Auto-detect",
+      "style": "Communication Style",
+      "styleAuto": "Auto",
+      "styleConcise": "Concise",
+      "styleFormal": "Formal",
+      "styleTechnical": "Technical",
+      "styleCasual": "Casual",
+      "customInstructions": "Custom Instructions",
+      "customInstructionsPlaceholder": "Additional preferences for the AI...",
+      "saved": "Profile saved."
+    }
   },
   "popups": {
     "auth": {

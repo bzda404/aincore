@@ -110,6 +110,17 @@ export const methodSchemas: Record<string, z.ZodType<unknown>> = {
     limit: z.number().int().min(1).max(10000).optional(),
   }).passthrough(),
 
+  // User profile
+  'profile.get': z.object({}).passthrough(),
+
+  'profile.update': z.object({
+    display_name: z.string().max(100).optional(),
+    language: z.string().max(50).optional(),
+    communication_style: z.string().max(100).optional(),
+    custom_instructions: z.string().max(5000).optional(),
+    preferences: z.record(z.string(), z.unknown()).optional(),
+  }).passthrough(),
+
   // OpenAI-compatible routes
   'POST:/v1/chat/completions': z.object({
     messages: z.array(z.object({

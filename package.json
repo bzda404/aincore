@@ -1,6 +1,6 @@
 {
   "name": "hearth",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "Hearth \u2014 \u672c\u5730 AI \u7b97\u529b\u5e73\u53f0\u4e2d\u67a2",
   "main": "./out/main/index.js",
   "private": true,

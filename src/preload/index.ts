@@ -97,6 +97,10 @@ const api = {
     return () => { ipcRenderer.removeListener('mt::core::oauth-consent', listener) }
   },
 
+  // User profile
+  getProfile: () => ipcRenderer.invoke('hub:profile:get'),
+  updateProfile: (partial: Record<string, unknown>) => ipcRenderer.invoke('hub:profile:update', partial),
+
   openExternal: (url: string) => ipcRenderer.invoke('hub:open-external', url),
 
   // Settings
