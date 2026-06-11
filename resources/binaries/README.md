@@ -1,6 +1,6 @@
 # Core Binaries
 
-This directory holds platform-specific native binaries bundled with MindVault Core.
+This directory holds platform-specific native binaries bundled with AinCore.
 
 ## llama-server
 

@@ -1,10 +1,10 @@
 {
-  "name": "hearth",
-  "version": "1.0.0-rc.2",
-  "description": "Hearth \u2014 \u672c\u5730 AI \u7b97\u529b\u5e73\u53f0\u4e2d\u67a2",
+  "name": "aincore",
+  "version": "1.0.0-rc.3",
+  "description": "AinCore — 本地 AI 计算平台核心枢纽：llama.cpp 模型推理、OAuth 2.0 PKCE 授权、UDS JSON-RPC 服务、隐私哨兵与 AI 记忆系统",
   "main": "./out/main/index.js",
   "private": true,
-  "homepage": "https://github.com/bzda404/hearth",
+  "homepage": "https://github.com/bzda404/aincore",
   "engines": {
     "node": ">=20.19.0",
     "pnpm": ">=10"

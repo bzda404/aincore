@@ -1,7 +1,7 @@
 /**
  * OAuth 2.0 Server — 本地 UDS JSON-RPC 上的 OAuth 端点
  *
- * 在 MindVault Core 的 UDS 服务器上挂载以下 JSON-RPC 方法:
+ * 在 AinCore 的 UDS 服务器上挂载以下 JSON-RPC 方法:
  *
  *   oauth.register     — 注册 OAuth 客户端，返回 client_id + client_secret
  *   oauth.authorize    — 发起授权请求，返回 authorization_code（PKCE）

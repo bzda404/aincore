@@ -1,5 +1,5 @@
 /**
- * Auto-Updater — 自动检测并安装 MindVault Core 更新
+ * Auto-Updater — 自动检测并安装 AinCore 更新
  *
  * 使用 electron-updater (autoUpdater) 配合 GitHub Releases。
  * 在生产环境 (packaged) 下定期检查更新并通知渲染进程。

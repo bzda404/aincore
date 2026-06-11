@@ -1,6 +1,6 @@
 /**
- * UDS JSON-RPC 服务器 — MindVault Core 的核心通信层。
- * 外部应用和 MindVault Notes 都通过本地 socket 发送 JSON-RPC 消息。
+ * UDS JSON-RPC 服务器 — AinCore 的核心通信层。
+ * 外部应用和 AinCore Notes 都通过本地 socket 发送 JSON-RPC 消息。
  */
 import { createServer, type Server, type Socket } from 'net'
 import { unlinkSync, existsSync, chmodSync } from 'fs'
@@ -20,7 +20,7 @@ import {
   JsonRpcErrorCode,
   buildJsonRpcError,
   ErrorCode,
-  MindVaultError,
+  AinCoreError,
 } from '../../shared/errorCodes'
 import { validateParams } from './validation'
 
@@ -34,8 +34,8 @@ class TokenBucketRateLimiter {
   private refillRate: number // tokens per millisecond
 
   constructor(
-    requestsPerMinute: number = Number(process.env.MINDVAULT_RATE_LIMIT_RPM) || 100,
-    burstSize: number = Number(process.env.MINDVAULT_RATE_LIMIT_BURST) || 20
+    requestsPerMinute: number = Number(process.env.AINCORE_RATE_LIMIT_RPM) || 100,
+    burstSize: number = Number(process.env.AINCORE_RATE_LIMIT_BURST) || 20
   ) {
     this.maxTokens = burstSize
     this.refillRate = requestsPerMinute / 60_000 // per ms
@@ -191,7 +191,7 @@ export async function startServer(): Promise<void> {
             }
             socket.write(JSON.stringify(response) + '\n')
           } catch (err) {
-            const errCode = err instanceof MindVaultError ? err.code : ErrorCode.UNKNOWN
+            const errCode = err instanceof AinCoreError ? err.code : ErrorCode.UNKNOWN
             const errMsg = err instanceof Error ? err.message : String(err)
             const response = buildJsonRpcError(
               JsonRpcErrorCode.INTERNAL_ERROR,
@@ -220,7 +220,7 @@ export async function startServer(): Promise<void> {
       if (platform() !== 'win32') {
         try { chmodSync(SOCKET_PATH, 0o600) } catch { /* best effort */ }
       }
-      console.log(`[MindVault Core] UDS 服务器监听 ${SOCKET_PATH}`)
+      console.log(`[AinCore] UDS 服务器监听 ${SOCKET_PATH}`)
       resolve()
     })
 
@@ -324,7 +324,7 @@ export async function handleJsonRpcRequest(request: JsonRpcRequest): Promise<unk
   const effectiveHandler = handler || openaiHandler
 
   if (!effectiveHandler) {
-    throw new MindVaultError(
+    throw new AinCoreError(
       ErrorCode.METHOD_NOT_FOUND,
       `Unknown method: ${method}`,
     )
@@ -356,14 +356,14 @@ export async function handleJsonRpcRequest(request: JsonRpcRequest): Promise<unk
       const modelName = validatedParams['model'] as string | undefined
       if (session.kind === 'oauth') {
         if (!hasModelGrant(session, modelName)) {
-          throw new MindVaultError(
+          throw new AinCoreError(
             ErrorCode.MODEL_NOT_AUTHORIZED,
             modelName ? `应用未授权使用模型 ${modelName}` : '未授权：此应用没有任何模型使用权限',
           )
         }
       } else if (modelName) {
         const perm = checkModelPermission(token, modelName)
-        if (!perm.allowed) throw new MindVaultError(
+        if (!perm.allowed) throw new AinCoreError(
           ErrorCode.MODEL_NOT_AUTHORIZED,
           perm.reason || '未授权使用该模型',
         )
@@ -371,7 +371,7 @@ export async function handleJsonRpcRequest(request: JsonRpcRequest): Promise<unk
         // If no specific model, just check they have some model auth
         const grants = listActiveAuthorizationsForApp(session.app_id)
         if (grants.models.length === 0) {
-          throw new MindVaultError(
+          throw new AinCoreError(
             ErrorCode.MODEL_NOT_AUTHORIZED,
             '未授权：此应用没有任何模型使用权限',
           )
@@ -387,7 +387,7 @@ export async function handleJsonRpcRequest(request: JsonRpcRequest): Promise<unk
       if (kbPath && isAbsolute(kbPath)) {
         const requiredScope = method === 'write_note' ? 'read_write' : 'read'
         const perm = session.kind === 'session' ? checkKbPermission(token, kbPath, requiredScope) : { allowed: true }
-        if (!perm.allowed) throw new MindVaultError(
+        if (!perm.allowed) throw new AinCoreError(
           ErrorCode.KB_NOT_AUTHORIZED,
           perm.reason || '未授权访问该知识库',
         )
@@ -395,7 +395,7 @@ export async function handleJsonRpcRequest(request: JsonRpcRequest): Promise<unk
       // If no specific path, check they have some KB auth
       const grants = listActiveAuthorizationsForApp(session.app_id)
       if (grants.kb_paths.length === 0) {
-        throw new MindVaultError(
+        throw new AinCoreError(
           ErrorCode.KB_NOT_AUTHORIZED,
           '未授权：此应用没有任何知识库访问权限',
         )

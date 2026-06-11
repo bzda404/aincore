@@ -317,7 +317,7 @@ function generateClientId(name: string): string {
 }
 
 function isFirstPartyAppName(name: string): boolean {
-  return name.trim().toLowerCase() === 'mindvault notes'
+  return name.trim().toLowerCase() === 'aincore notes'
 }
 
 function generateSecret(): string {

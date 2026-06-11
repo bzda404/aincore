@@ -66,7 +66,7 @@ export function isMemFallback(): boolean {
 }
 
 function getDataDir(): string {
-  const dir = process.env.MINDVAULT_CORE_HOME || join(app.getPath('userData'))
+  const dir = process.env.AINCORE_CORE_HOME || join(app.getPath('userData'))
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
   return dir
 }

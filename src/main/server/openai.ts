@@ -17,7 +17,7 @@ export function registerOpenAIRoutes(registerRoute: RegisterRoute): void {
         id: engine.currentModel,
         object: 'model',
         created: Date.now(),
-        owned_by: 'mindvault-core',
+        owned_by: 'aincore',
       }],
     }
   })

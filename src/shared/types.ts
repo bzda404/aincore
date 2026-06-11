@@ -1,4 +1,4 @@
-// MindVault Core 共享类型
+// AinCore 共享类型
 
 export interface ModelInfo {
   id: string

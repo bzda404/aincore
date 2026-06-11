@@ -106,14 +106,14 @@ export function getAppsWithStatus(): InstalledApp[] {
 }
 
 /**
- * 获取 MindVault Notes 清单 (第一个内置应用)
+ * 获取 AinCore Notes 清单 (第一个内置应用)
  */
 export function getNotesManifest() {
   return {
-    app_id: 'mindvault-notes',
-    name: 'MindVault Notes',
+    app_id: 'aincore-notes',
+    name: 'AinCore Notes',
     version: '0.20.0',
-    vendor: 'MindVault',
+    vendor: 'AinCore',
     icon: '📝',
     description: '本地 AI 驱动的知识管理平台 — 文件树、BM25 搜索、Markdown 编辑器、MCP 协议支持',
     category: 'productivity',
@@ -125,6 +125,6 @@ export function getNotesManifest() {
       'system:status',
       'offline_access',
     ],
-    entry_point: 'mindvault-notes',
+    entry_point: 'aincore-notes',
   }
 }

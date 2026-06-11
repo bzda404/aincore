@@ -1,5 +1,5 @@
 /**
- * MindVault Core runtime policy.
+ * AinCore runtime policy.
  *
  * Core is optimized for one always-on, lightweight local model. On startup we
  * auto-load the best installed <=1B candidate so Note can use completion and
@@ -176,7 +176,7 @@ export function getModelLoadGuard(model: Pick<ModelInfo, 'parameterSize' | 'name
   if (parameterBillions > MAX_CORE_MODEL_BILLIONS) {
     return {
       loadable: false,
-      reason: `MindVault Core 当前仅允许加载 ≤${MAX_CORE_MODEL_BILLIONS}B 的轻量模型`,
+      reason: `AinCore 当前仅允许加载 ≤${MAX_CORE_MODEL_BILLIONS}B 的轻量模型`,
     }
   }
 

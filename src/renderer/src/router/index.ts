@@ -1,5 +1,5 @@
 /**
- * Vue Router configuration for MindVault Core admin UI.
+ * Vue Router configuration for AinCore admin UI.
  * Uses hash history (required for Electron file:// loading).
  */
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'

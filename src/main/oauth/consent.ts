@@ -50,7 +50,7 @@ export function enqueueOAuthConsent(
 ): Promise<{ code: string; state?: string }> {
   const requestId = `oauth_${++consentCounter}_${Date.now()}`
 
-  // First-party clients (e.g., MindVault Notes) skip the consent popup
+  // First-party clients (e.g., AinCore Notes) skip the consent popup
   if (isClientFirstParty(clientId)) {
     console.log(
       `[OAuth Consent] First-party auto-consent: client=${clientId} ` +
@@ -154,7 +154,7 @@ function ensureScopeGrants(clientId: string, scopes: string): void {
     grantAuth(clientId, null, null, null, null, 'read')
   }
 
-  const defaultKbPath = process.env.MINDVAULT_NOTES_KB_PATH || ''
+  const defaultKbPath = process.env.AINCORE_NOTES_KB_PATH || ''
   const needsKb = scopeList.includes('knowledge:read') || scopeList.includes('knowledge:write')
   if (needsKb && defaultKbPath && !active.some(auth => auth.kb_path === defaultKbPath)) {
     grantAuth(

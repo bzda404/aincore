@@ -198,7 +198,7 @@ describe('App Installer', () => {
 
   describe('computeSHA256', () => {
     it('should compute hash from file content', () => {
-      const result = computeSHA256('/tmp/testfile.mindvault')
+      const result = computeSHA256('/tmp/testfile.aincore')
       expect(result).toBe('abc123def456')
     })
   })
@@ -214,7 +214,7 @@ describe('App Installer', () => {
 
       vi.mocked(readFileSync).mockReturnValue(Buffer.from('file content'))
 
-      const result = await installFromFile('/tmp/app.mindvault', 'expected_hash_different')
+      const result = await installFromFile('/tmp/app.aincore', 'expected_hash_different')
 
       expect(result.success).toBe(false)
       expect(result.error).toContain('SHA256 校验失败')

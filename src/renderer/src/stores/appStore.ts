@@ -21,7 +21,7 @@ export const useAppStore = defineStore('apps', () => {
 
   const notesApp = computed(() =>
     registeredApps.value.find(app =>
-      app.name === 'MindVault Notes' || app.app_id.includes('mindvault-notes'),
+      app.name === 'AinCore Notes' || app.app_id.includes('aincore-notes'),
     ) || null,
   )
 

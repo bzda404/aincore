@@ -3,13 +3,13 @@ import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs'
 /**
  * App Marketplace Client — GitHub 驱动的应用市场
  *
- * 通过 GitHub Search API 发现带有 `mindvault-app` topic 的开源应用仓库，
+ * 通过 GitHub Search API 发现带有 `aincore-app` topic 的开源应用仓库，
  * 并通过 GitHub Releases API 获取版本信息和下载链接。
  *
  * 支持:
  *   - 浏览应用市场（搜索 GitHub topic）
  *   - 应用详情（仓库信息 + README）
- *   - 下载应用包（Release assets 中的 .mindvault 文件）
+ *   - 下载应用包（Release assets 中的 .aincore 文件）
  *   - 检查更新（对比本地版本与最新 Release）
  *
  * 速率限制:
@@ -53,11 +53,11 @@ export interface MarketplaceAppVersion {
 // Configuration
 // ============================================================
 
-/** The GitHub topic used to discover MindVault apps */
-const APP_TOPIC = 'mindvault-app'
+/** The GitHub topic used to discover AinCore apps */
+const APP_TOPIC = 'aincore-app'
 
-/** File extension for MindVault app packages in release assets */
-const APP_PACKAGE_EXT = '.mindvault'
+/** File extension for AinCore app packages in release assets */
+const APP_PACKAGE_EXT = '.aincore'
 
 /** Optional GitHub token for higher rate limits (env var or runtime config) */
 let githubToken: string | null = process.env.GITHUB_TOKEN || null
@@ -359,7 +359,7 @@ export async function fetchAppVersions(appId: string): Promise<MarketplaceAppVer
 }
 
 /**
- * 获取应用下载 URL — 从 GitHub Release assets 中查找 .mindvault 文件
+ * 获取应用下载 URL — 从 GitHub Release assets 中查找 .aincore 文件
  */
 export async function fetchAppDownloadUrl(appId: string, version: string): Promise<string | null> {
   const cacheKey = `download:${appId}:${version}`

@@ -16,7 +16,7 @@ export const useSystemStore = defineStore('system', () => {
   const loadedModelId = ref<string | null>(null)
   const ramUsedMB = ref(0)
   const coreVersion = ref('')
-  const socketPath = ref('/tmp/mindvault.sock')
+  const socketPath = ref('/tmp/aincore.sock')
   const transport = ref('uds')
   const memFallback = ref(false)
   const isLoading = ref(true)

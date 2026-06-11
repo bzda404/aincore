@@ -1,7 +1,7 @@
 /**
  * 模型管理路由（通过 UDS JSON-RPC）。
  * public 方法供第三方 SDK 使用并由 server/index.ts 校验 session_token；
- * internal.* 方法供 MindVault 桌面主进程使用，不暴露给 SDK。
+ * internal.* 方法供 AinCore 桌面主进程使用，不暴露给 SDK。
  */
 import { statSync } from 'fs'
 import { listModels, getModel, deleteModel, addModel } from '../store/modelDb'
@@ -146,7 +146,7 @@ export function registerModelRoutes(registerRoute: RegisterRoute): void {
 
   registerRoute('completions', '', completions)
 
-  // Built-in MindVault desktop client methods. These bypass session_token
+  // Built-in AinCore desktop client methods. These bypass session_token
   // checks in server/index.ts and are intentionally not exported by the SDK.
   registerRoute('internal.status', '', async() => getStatus())
   registerRoute('internal.models.list', '', async() => getModels())

@@ -24,7 +24,7 @@
     },
     "task2": {
       "eyebrow": "Built-in App",
-      "title": "Connect MindVault Notes",
+      "title": "Connect AinCore Notes",
       "descReady": "Notes is authorized via Core and can use local models.",
       "descRevoked": "Notes permissions revoked. Reopen to re-authorize.",
       "descDefault": "Open Notes to request authorization and start using local models.",
@@ -94,11 +94,11 @@
     "kbPerms": "{count} KB permission(s)",
     "authorized": "Authorized",
     "revokedState": "Revoked",
-    "emptyApps": "No connected apps. Open MindVault Notes to get started.",
+    "emptyApps": "No connected apps. Open AinCore Notes to get started.",
     "lastSeen": "Last seen"
   },
   "appmarket": {
-    "subtitle": "Browse, search, and install MindVault ecosystem apps",
+    "subtitle": "Browse, search, and install AinCore ecosystem apps",
     "search": "Search apps",
     "allCategories": "All",
     "productivity": "Productivity",
@@ -269,7 +269,7 @@
     "downloadFailed": "Download failed, retry available"
   },
   "error": {
-    "CORE_NOT_RUNNING": "MindVault Core is not running. Please start Core first.",
+    "CORE_NOT_RUNNING": "AinCore is not running. Please start Core first.",
     "CORE_INIT_FAILED": "Core initialization failed.",
     "MODEL_NOT_FOUND": "Model not found.",
     "MODEL_TOO_LARGE": "This model exceeds the memory limit.",
@@ -300,7 +300,7 @@
     "UNKNOWN": "An unexpected error occurred."
   },
   "onboarding": {
-    "title": "Welcome to MindVault",
+    "title": "Welcome to AinCore",
     "skip": "Skip",
     "next": "Next",
     "done": "Get Started",
@@ -317,7 +317,7 @@
     },
     "step3": {
       "title": "You're All Set!",
-      "desc": "MindVault Core is ready. Open MindVault Notes to start using local AI.",
+      "desc": "AinCore is ready. Open AinCore Notes to start using local AI.",
       "openNotes": "Open Notes",
       "goToDashboard": "Go to Dashboard"
     }

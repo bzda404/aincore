@@ -10,7 +10,7 @@ export function registerHealthRoutes(registerRoute: RegisterRoute): void {
     return {
       status: 'ok',
       version: '1.0.0',
-      name: 'MindVault Core',
+      name: 'AinCore',
       port: null,
       transport: TRANSPORT,
       socketPath: SOCKET_PATH,

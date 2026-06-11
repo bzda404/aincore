@@ -1,9 +1,9 @@
 /**
- * MindVault Package Installer — `.mindvault` 应用包安装
+ * AinCore Package Installer — `.aincore` 应用包安装
  *
- * 处理 .mindvault 包的下载、校验、解压、manifest 验证和安装注册。
+ * 处理 .aincore 包的下载、校验、解压、manifest 验证和安装注册。
  *
- * .mindvault = gzip 压缩的 tar 归档，包含:
+ * .aincore = gzip 压缩的 tar 归档，包含:
  *   manifest.json   — 应用元数据 (必需)
  *   icon.png        — 应用图标 (可选)
  *   bundle/         — 应用代码
@@ -174,7 +174,7 @@ async function extractTarGz(archivePath: string, destDir: string): Promise<void>
       proc.on('error', reject)
     })
   } catch {
-    throw new Error('无法解压 .mindvault 包 (需要 tar 命令)')
+    throw new Error('无法解压 .aincore 包 (需要 tar 命令)')
   }
 }
 
@@ -183,7 +183,7 @@ async function extractTarGz(archivePath: string, destDir: string): Promise<void>
 // ============================================================
 
 /**
- * 从本地文件安装 .mindvault 包
+ * 从本地文件安装 .aincore 包
  */
 export async function installFromFile(
   filePath: string,
@@ -273,7 +273,7 @@ export async function installFromFile(
 }
 
 /**
- * 从 URL 下载并安装 .mindvault 包
+ * 从 URL 下载并安装 .aincore 包
  */
 export async function installFromUrl(
   url: string,
@@ -288,7 +288,7 @@ export async function installFromUrl(
 
   // 1. 下载到临时文件
   const tempDir = getTempDir()
-  const tempFile = join(tempDir, `download_${Date.now()}.mindvault`)
+  const tempFile = join(tempDir, `download_${Date.now()}.aincore`)
 
   try {
     const response = await fetch(url, {
@@ -364,8 +364,8 @@ export function loadInstalledManifest(appId: string): AppManifest | null {
 }
 
 /**
- * 卸载 .mindvault 应用（删除文件 + 数据库记录）
+ * 卸载 .aincore 应用（删除文件 + 数据库记录）
  */
-export async function uninstallMindVaultApp(appId: string): Promise<boolean> {
+export async function uninstallAinCoreApp(appId: string): Promise<boolean> {
   return uninstallApplication(appId)
 }

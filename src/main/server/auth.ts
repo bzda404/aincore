@@ -105,7 +105,7 @@ export function registerAuthRoutes(registerRoute: RegisterRoute): void {
    */
   registerRoute('app.ping', '', async() => ({
     protocol_version: '1.0.0',
-    name: 'MindVault Core',
+    name: 'AinCore',
     features: ['chat', 'completions', 'search', 'kb_access', 'oauth_like_auth'],
     requires_auth: true,
     transport: TRANSPORT,

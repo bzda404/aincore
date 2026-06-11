@@ -368,7 +368,7 @@ async function warmupModel(): Promise<void> {
 // ============================================================
 
 function shouldUseMockEngine(): boolean {
-  return process.env.MINDVAULT_CORE_MOCK_ENGINE === '1' || !binaryPath || !existsSync(binaryPath)
+  return process.env.AINCORE_CORE_MOCK_ENGINE === '1' || !binaryPath || !existsSync(binaryPath)
 }
 
 async function startMockEngine(port: number, model: ModelInfo): Promise<void> {
@@ -384,7 +384,7 @@ async function startMockEngine(port: number, model: ModelInfo): Promise<void> {
       req.on('data', chunk => { body += chunk.toString() })
       req.on('end', () => {
         const prompt = extractPrompt(body)
-        const content = `MindVault Core 已通过本地授权中心调用共享模型 ${model.name}。${prompt ? `收到：${prompt.slice(0, 60)}` : ''}`
+        const content = `AinCore 已通过本地授权中心调用共享模型 ${model.name}。${prompt ? `收到：${prompt.slice(0, 60)}` : ''}`
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify({
           id: `mock-${Date.now()}`,

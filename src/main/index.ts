@@ -1,5 +1,5 @@
 /**
- * MindVault Core — 本地 AI 算力平台中枢
+ * AinCore — 本地 AI 算力平台中枢
  * 主进程入口
  */
 import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, shell } from 'electron'
@@ -29,18 +29,18 @@ let tray: Tray | null = null
 let mainWindow: BrowserWindow | null = null
 let notesProcess: ReturnType<typeof spawn> | null = null
 
-const isBackgroundMode = process.argv.includes('--background') || process.env.MINDVAULT_CORE_BACKGROUND === '1'
+const isBackgroundMode = process.argv.includes('--background') || process.env.AINCORE_BACKGROUND === '1'
 
 async function openNotesApp(): Promise<{ success: boolean; mode: 'dev' | 'external' | 'missing'; message: string }> {
-  if (process.env.MINDVAULT_NOTES_COMMAND) {
-    const child = spawn(process.env.MINDVAULT_NOTES_COMMAND, {
+  if (process.env.AINCORE_NOTES_COMMAND) {
+    const child = spawn(process.env.AINCORE_NOTES_COMMAND, {
       shell: true,
       detached: true,
       stdio: 'ignore',
       env: { ...process.env },
     })
     child.unref()
-    return { success: true, mode: 'external', message: '已打开 MindVault Notes' }
+    return { success: true, mode: 'external', message: '已打开 AinCore Notes' }
   }
 
   const candidates = [
@@ -60,22 +60,22 @@ async function openNotesApp(): Promise<{ success: boolean; mode: 'dev' | 'extern
       })
       notesProcess.on('exit', () => { notesProcess = null })
     }
-    return { success: true, mode: 'dev', message: '正在启动 MindVault Notes' }
+    return { success: true, mode: 'dev', message: '正在启动 AinCore Notes' }
   }
 
-  const opened = await shell.openExternal('mindvault-notes://open').then(() => true).catch(() => false)
+  const opened = await shell.openExternal('aincore-notes://open').then(() => true).catch(() => false)
   if (opened) {
-    return { success: true, mode: 'external', message: '已请求打开 MindVault Notes' }
+    return { success: true, mode: 'external', message: '已请求打开 AinCore Notes' }
   }
 
-  return { success: false, mode: 'missing', message: '未找到 MindVault Notes。请先安装或设置 MINDVAULT_NOTES_COMMAND。' }
+  return { success: false, mode: 'missing', message: '未找到 AinCore Notes。请先安装或设置 AINCORE_NOTES_COMMAND。' }
 }
 
 function createTray(): void {
   // Create a simple tray icon
   const icon = nativeImage.createEmpty()
   tray = new Tray(icon)
-  tray.setToolTip('MindVault Core — 本地 AI 算力中枢')
+  tray.setToolTip('AinCore — 本地 AI 算力中枢')
 
   const contextMenu = Menu.buildFromTemplate([
     { label: '打开管理界面', click: () => showWindow() },
@@ -95,7 +95,7 @@ function createWindow(): BrowserWindow {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    title: 'MindVault Core — 模型中心',
+    title: 'AinCore — 模型中心',
     show: false,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -283,8 +283,8 @@ function registerAuthIpcHandlers(): void {
   })
 
   ipcMain.handle('hub:apps:uninstall', async(_event, appId: string) => {
-    const { uninstallMindVaultApp } = await import('./apps/installer')
-    return uninstallMindVaultApp(appId)
+    const { uninstallAinCoreApp } = await import('./apps/installer')
+    return uninstallAinCoreApp(appId)
   })
 
   // ==================================================================
@@ -434,23 +434,23 @@ app.whenReady().then(async() => {
   preloadResidentModels()
     .then((loadedIds) => {
       if (loadedIds.length > 0) {
-        console.log(`[MindVault Core] 模型已预加载: ${loadedIds.join(', ')}`)
+        console.log(`[AinCore] 模型已预加载: ${loadedIds.join(', ')}`)
       } else {
         ensureDefaultLightweightModelLoaded()
           .then((result) => {
             if (result.loaded && result.modelId) {
-              console.log(`[MindVault Core] 默认轻量模型已就绪: ${result.modelId}`)
+              console.log(`[AinCore] 默认轻量模型已就绪: ${result.modelId}`)
             } else {
-              console.log(`[MindVault Core] 跳过默认模型加载: ${result.reason || '无可用模型'}`)
+              console.log(`[AinCore] 跳过默认模型加载: ${result.reason || '无可用模型'}`)
             }
           })
           .catch((err) => {
-            console.warn('[MindVault Core] 默认轻量模型加载失败:', err)
+            console.warn('[AinCore] 默认轻量模型加载失败:', err)
           })
       }
     })
     .catch((err) => {
-      console.warn('[MindVault Core] 模型预加载失败:', err)
+      console.warn('[AinCore] 模型预加载失败:', err)
     })
 
   // Register IPC handlers for the management UI
@@ -465,10 +465,10 @@ app.whenReady().then(async() => {
 
   // Initialize auto-updater (only in packaged builds)
   initAutoUpdater().catch((err) => {
-    console.warn('[MindVault Core] Auto-updater 初始化失败:', err)
+    console.warn('[AinCore] Auto-updater 初始化失败:', err)
   })
 
-  console.log(`[MindVault Core] 服务已启动，socket: ${SOCKET_PATH}`)
+  console.log(`[AinCore] 服务已启动，socket: ${SOCKET_PATH}`)
 })
 
 app.on('window-all-closed', () => {
@@ -486,11 +486,11 @@ let isShuttingDown = false
 async function gracefulShutdown(reason: string): Promise<void> {
   if (isShuttingDown) return
   isShuttingDown = true
-  console.log(`[MindVault Core] 正在优雅关闭 (${reason})...`)
+  console.log(`[AinCore] 正在优雅关闭 (${reason})...`)
 
   const SHUTDOWN_TIMEOUT = 10_000
   const forceExit = setTimeout(() => {
-    console.error('[MindVault Core] 关闭超时，强制退出')
+    console.error('[AinCore] 关闭超时，强制退出')
     process.exit(1)
   }, SHUTDOWN_TIMEOUT)
 
@@ -516,7 +516,7 @@ async function gracefulShutdown(reason: string): Promise<void> {
     // 6. Cleanup OAuth expired data
     cleanupExpired()
   } catch (err) {
-    console.error('[MindVault Core] 关闭过程中出错:', err)
+    console.error('[AinCore] 关闭过程中出错:', err)
   } finally {
     clearTimeout(forceExit)
   }
@@ -542,13 +542,13 @@ for (const signal of ['SIGTERM', 'SIGINT'] as const) {
 // Uncaught exception / unhandled rejection handlers
 // ============================================================
 process.on('uncaughtException', async (err) => {
-  console.error('[MindVault Core] uncaughtException:', err.stack || err)
+  console.error('[AinCore] uncaughtException:', err.stack || err)
   await gracefulShutdown('uncaughtException')
   process.exit(1)
 })
 
 process.on('unhandledRejection', async (reason) => {
-  console.error('[MindVault Core] unhandledRejection:', reason)
+  console.error('[AinCore] unhandledRejection:', reason)
   await gracefulShutdown('unhandledRejection')
   process.exit(1)
 })

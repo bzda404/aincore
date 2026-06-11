@@ -4,7 +4,7 @@
  * Linux: SO_PEERCRED 获取 PID/UID（通过 /proc/net/unix）
  * macOS: lsof 子进程获取对端 PID
  *
- * Peer credential verification is critical for the MindVault Core security model.
+ * Peer credential verification is critical for the AinCore security model.
  * Without it, any local process that can write to the socket can claim to be
  * any registered app.
  */
@@ -137,7 +137,7 @@ function getPeerCredentialsMacOS(socket: { _handle?: { fd?: number } }): PeerCre
 
   // lsof output:
   // COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-  // node    12345 user   12u  unix 0x....      0t0  <inode> /tmp/mindvault.sock
+  // node    12345 user   12u  unix 0x....      0t0  <inode> /tmp/aincore.sock
   //
   // Find our socket fd line, get its inode, then find the peer.
   const fdStr = `${fd}u`

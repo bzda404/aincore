@@ -1,10 +1,10 @@
 npmRebuild: false
-appId: com.hearth.app
-productName: Hearth
+appId: com.aincore.app
+productName: AinCore
 publish:
   provider: github
   owner: bzda404
-  repo: hearth
+  repo: aincore
   releaseType: release
 directories:
   buildResources: build
@@ -21,21 +21,21 @@ extraResources:
     filter:
       - '**/*'
 win:
-  executableName: hearth
-  artifactName: 'hearth-win-${arch}-${version}.${ext}'
+  executableName: aincore
+  artifactName: 'aincore-win-${arch}-${version}.${ext}'
   target:
     - target: nsis
     - target: zip
   icon: static/icon.png
   signAndEditExecutable: false
 nsis:
-  artifactName: 'hearth-win-${arch}-${version}-setup.${ext}'
-  shortcutName: Hearth
-  uninstallDisplayName: Hearth
+  artifactName: 'aincore-win-${arch}-${version}-setup.${ext}'
+  shortcutName: AinCore
+  uninstallDisplayName: AinCore
   createDesktopShortcut: false
   createStartMenuShortcut: true
 mac:
-  artifactName: 'hearth-mac-${arch}-${version}.${ext}'
+  artifactName: 'aincore-mac-${arch}-${version}.${ext}'
   entitlementsInherit: build/mac/entitlements.mac.plist
   hardenedRuntime: true
   gatekeeperAssess: false
@@ -45,12 +45,12 @@ mac:
     - zip
   icon: static/icon.png
 dmg:
-  artifactName: 'hearth-mac-${arch}-${version}.${ext}'
+  artifactName: 'aincore-mac-${arch}-${version}.${ext}'
 linux:
-  artifactName: 'hearth-linux-${version}.${ext}'
-  executableName: hearth
+  artifactName: 'aincore-linux-${version}.${ext}'
+  executableName: aincore
   description: '本地 AI 算力平台中枢'
-  maintainer: 'Hearth'
+  maintainer: 'AinCore'
   category: 'Utility'
   target:
     - AppImage

@@ -7,7 +7,7 @@
         <div class="app-avatar notes-avatar">N</div>
         <div class="row-main">
           <div class="app-name-row">
-            <span class="row-title">MindVault Notes</span>
+            <span class="row-title">AinCore Notes</span>
             <StatusPill
               :variant="appStore.notesConnected ? 'ready' : appStore.notesRevoked ? 'error' : 'idle'"
               :label="notesStateLabel"

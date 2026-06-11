@@ -1,7 +1,7 @@
 /**
  * OAuth 2.0 Scopes — 作用域定义与校验
  *
- * MindVault Core OAuth 是本地 UDS-based 的 OAuth 2.0 实现。
+ * AinCore OAuth 是本地 UDS-based 的 OAuth 2.0 实现。
  * 作用域用于限制第三方应用的权限范围。
  */
 

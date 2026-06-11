@@ -23,7 +23,7 @@ vi.mock('../../peerAuth', () => ({
   getPeerCredentials: vi.fn(() => null),
 }))
 vi.mock('../transport', () => ({
-  SOCKET_PATH: '/tmp/test-mindvault.sock',
+  SOCKET_PATH: '/tmp/test-aincore.sock',
 }))
 vi.mock('net', () => ({
   createServer: vi.fn(() => ({

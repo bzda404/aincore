@@ -1,5 +1,5 @@
 /**
- * MindVault 统一错误码体系
+ * AinCore 统一错误码体系
  *
  * 所有 JSON-RPC 错误和前端错误消息都使用此模块定义的结构化错误码，
  * 配合 i18n 的 `error.*` keys 实现多语言用户友好提示。
@@ -64,16 +64,16 @@ export const ErrorCode = {
 export type ErrorCodeValue = (typeof ErrorCode)[keyof typeof ErrorCode]
 
 // ============================================================
-// MindVaultError class
+// AinCoreError class
 // ============================================================
 
-export class MindVaultError extends Error {
+export class AinCoreError extends Error {
   public readonly code: ErrorCodeValue
   public readonly details?: Record<string, unknown>
 
   constructor(code: ErrorCodeValue, message: string, details?: Record<string, unknown>) {
     super(message)
-    this.name = 'MindVaultError'
+    this.name = 'AinCoreError'
     this.code = code
     this.details = details
   }
@@ -96,7 +96,7 @@ export function errorI18nKey(code: ErrorCodeValue): string {
  * 服务端在 error.data.code 中返回结构化错误码。
  */
 export function extractErrorCode(err: unknown): ErrorCodeValue {
-  if (err instanceof MindVaultError) return err.code
+  if (err instanceof AinCoreError) return err.code
   if (err && typeof err === 'object') {
     const e = err as Record<string, unknown>
     // JSON-RPC error with data.code
