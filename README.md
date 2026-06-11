@@ -86,4 +86,4 @@ Hearth (Electron Main)
 ## 相关链接
 
 - [Hearthnotes](https://github.com/bzda404/hearthnotes) — 基于 Hearth 的知识管理应用
-- [@mindvault/sdk](https://github.com/bzda404/mindvault-sdk) — 接入 Hearth 的 TypeScript SDK
+- [@aincore/sdk](https://github.com/bzda404/mindvault-sdk) — 接入 Hearth 的 TypeScript SDK
