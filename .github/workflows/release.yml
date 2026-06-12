@@ -9,6 +9,11 @@ permissions:
   attestations: write
   id-token: write
 
+env:
+  # Pin a specific llama.cpp release for reproducible builds.
+  # Update this when upgrading the inference engine.
+  LLAMA_CPP_RELEASE: 'latest'
+
 jobs:
   build:
     strategy:
@@ -17,15 +22,24 @@ jobs:
         include:
           - platform: linux
             os: ubuntu-latest
+            arch: x64
+            bin_dir: linux
+            asset_suffix: bin-linux-x64.zip
           - platform: macos
             os: macos-latest
             arch: arm64
+            bin_dir: mac
+            asset_suffix: bin-macos-arm64.zip
           - platform: macos
             os: macos-latest
             arch: x64
+            bin_dir: mac
+            asset_suffix: bin-macos-x64.zip
           - platform: windows
             os: windows-latest
             arch: x64
+            bin_dir: win
+            asset_suffix: bin-win-x64.zip
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -39,6 +53,41 @@ jobs:
       - run: pnpm install --frozen-lockfile
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Download llama.cpp binaries (not stored in git due to size)
+      - name: Download llama.cpp binaries
+        shell: bash
+        run: |
+          if [ "${{ env.LLAMA_CPP_RELEASE }}" = "latest" ]; then
+            RELEASE_TAG=$(curl -sL "https://api.github.com/repos/ggerganov/llama.cpp/releases/latest" | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')
+          else
+            RELEASE_TAG="${{ env.LLAMA_CPP_RELEASE }}"
+          fi
+          echo "Downloading llama.cpp ${RELEASE_TAG} for ${{ matrix.asset_suffix }}"
+          ASSET_URL="https://github.com/ggerganov/llama.cpp/releases/download/${RELEASE_TAG}/llama-${RELEASE_TAG}-${{ matrix.asset_suffix }}"
+          echo "Asset URL: ${ASSET_URL}"
+
+          ZIP_PATH="${RUNNER_TEMP}/llama-bin.zip"
+          mkdir -p "resources/binaries/${{ matrix.bin_dir }}"
+          curl -sL "${ASSET_URL}" -o "${ZIP_PATH}"
+
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            # Windows: use PowerShell to extract (convert Unix path to Windows path)
+            WIN_ZIP=$(cygpath -w "${ZIP_PATH}")
+            WIN_DEST=$(cygpath -w "resources/binaries/${{ matrix.bin_dir }}")
+            pwsh -Command "Expand-Archive -Path '${WIN_ZIP}' -DestinationPath '${WIN_DEST}' -Force"
+          else
+            unzip -o "${ZIP_PATH}" -d "resources/binaries/${{ matrix.bin_dir }}"
+          fi
+
+          # Ensure llama-server is executable on Unix
+          if [ "${{ matrix.platform }}" != "windows" ]; then
+            chmod +x "resources/binaries/${{ matrix.bin_dir }}/llama-server" 2>/dev/null || true
+          fi
+
+          echo "Binaries downloaded:"
+          ls -la "resources/binaries/${{ matrix.bin_dir }}/"
+
       - name: Build Linux
         if: matrix.platform == 'linux'
         run: pnpm run build:linux
@@ -88,5 +137,6 @@ jobs:
         with:
           files: dist/*
           draft: true
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
