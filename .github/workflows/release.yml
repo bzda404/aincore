@@ -24,22 +24,22 @@ jobs:
             os: ubuntu-latest
             arch: x64
             bin_dir: linux
-            asset_suffix: bin-linux-x64.zip
+            asset_name: bin-ubuntu-x64.tar.gz
           - platform: macos
             os: macos-latest
             arch: arm64
             bin_dir: mac
-            asset_suffix: bin-macos-arm64.zip
+            asset_name: bin-macos-arm64.tar.gz
           - platform: macos
             os: macos-latest
             arch: x64
             bin_dir: mac
-            asset_suffix: bin-macos-x64.zip
+            asset_name: bin-macos-x64.tar.gz
           - platform: windows
             os: windows-latest
             arch: x64
             bin_dir: win
-            asset_suffix: bin-win-x64.zip
+            asset_name: bin-win-cpu-x64.zip
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -63,21 +63,23 @@ jobs:
           else
             RELEASE_TAG="${{ env.LLAMA_CPP_RELEASE }}"
           fi
-          echo "Downloading llama.cpp ${RELEASE_TAG} for ${{ matrix.asset_suffix }}"
-          ASSET_URL="https://github.com/ggerganov/llama.cpp/releases/download/${RELEASE_TAG}/llama-${RELEASE_TAG}-${{ matrix.asset_suffix }}"
+          echo "Downloading llama.cpp ${RELEASE_TAG}"
+          ASSET="llama-${RELEASE_TAG}-${{ matrix.asset_name }}"
+          ASSET_URL="https://github.com/ggerganov/llama.cpp/releases/download/${RELEASE_TAG}/${ASSET}"
           echo "Asset URL: ${ASSET_URL}"
 
-          ZIP_PATH="${RUNNER_TEMP}/llama-bin.zip"
+          ARCHIVE_PATH="${RUNNER_TEMP}/llama-bin"
           mkdir -p "resources/binaries/${{ matrix.bin_dir }}"
-          curl -sL "${ASSET_URL}" -o "${ZIP_PATH}"
+          curl -sL "${ASSET_URL}" -o "${ARCHIVE_PATH}"
 
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            # Windows: use PowerShell to extract (convert Unix path to Windows path)
-            WIN_ZIP=$(cygpath -w "${ZIP_PATH}")
+          if [[ "${{ matrix.asset_name }}" == *.tar.gz ]]; then
+            tar xzf "${ARCHIVE_PATH}" -C "resources/binaries/${{ matrix.bin_dir }}"
+          elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+            WIN_ARCHIVE=$(cygpath -w "${ARCHIVE_PATH}")
             WIN_DEST=$(cygpath -w "resources/binaries/${{ matrix.bin_dir }}")
-            pwsh -Command "Expand-Archive -Path '${WIN_ZIP}' -DestinationPath '${WIN_DEST}' -Force"
+            pwsh -Command "Expand-Archive -Path '${WIN_ARCHIVE}' -DestinationPath '${WIN_DEST}' -Force"
           else
-            unzip -o "${ZIP_PATH}" -d "resources/binaries/${{ matrix.bin_dir }}"
+            unzip -o "${ARCHIVE_PATH}" -d "resources/binaries/${{ matrix.bin_dir }}"
           fi
 
           # Ensure llama-server is executable on Unix
