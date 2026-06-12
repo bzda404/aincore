@@ -1,4 +1,4 @@
-npmRebuild: false
+npmRebuild: true
 appId: com.aincore.app
 productName: AinCore
 publish:

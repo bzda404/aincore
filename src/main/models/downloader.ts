@@ -53,7 +53,7 @@ export interface DownloadResult {
 let activeAbortController: AbortController | null = null
 let activeFilename: string | null = null
 
-function getModelDir(): string {
+export function getModelDir(): string {
   const dir = join(app.getPath('userData'), 'models')
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
   return dir

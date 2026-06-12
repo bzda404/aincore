@@ -44,10 +44,10 @@ async function openNotesApp(): Promise<{ success: boolean; mode: 'dev' | 'extern
   }
 
   const candidates = [
-    join(app.getAppPath(), '..', 'notes'),
-    join(app.getAppPath(), '..', '..', 'notes'),
-    join(process.cwd(), '..', 'notes'),
-    join(process.cwd(), 'packages', 'notes'),
+    join(app.getAppPath(), '..', 'hearthnotes'),
+    join(app.getAppPath(), '..', '..', 'hearthnotes'),
+    join(process.cwd(), '..', 'hearthnotes'),
+    join(process.cwd(), 'packages', 'hearthnotes'),
   ]
   const devNotesDir = candidates.find(candidate => existsSync(join(candidate, 'package.json'))) || ''
   if (!app.isPackaged && existsSync(join(devNotesDir, 'package.json'))) {
@@ -407,68 +407,76 @@ function registerAuthIpcHandlers(): void {
 }
 
 app.whenReady().then(async() => {
-  // Initialize SQLite databases
-  initModelDb()
-  initAuthDb()
-  initOAuthDb()
-  initAppStore()
-  initAuditDb()
-  migrateModelRegistry()
+  try {
+    // Initialize SQLite databases
+    initModelDb()
+    initAuthDb()
+    initOAuthDb()
+    initAppStore()
+    initAuditDb()
+    migrateModelRegistry()
 
-  // Initialize llama.cpp engine manager
-  initEngine()
+    // Initialize llama.cpp engine manager
+    initEngine()
 
-  // Defer non-critical initialization to improve cold start time
-  setImmediate(() => {
-    loadAuditLog()
-    initTokenPersistence(join(app.getPath('userData'), 'github-token'))
-  })
-
-  // Start the UDS JSON-RPC server used by the desktop app and SDK clients.
-  await startServer()
-
-  // Start model scheduler (idle unload + memory pressure)
-  startScheduler()
-
-  // Preload lightweight/resident models
-  preloadResidentModels()
-    .then((loadedIds) => {
-      if (loadedIds.length > 0) {
-        console.log(`[AinCore] 模型已预加载: ${loadedIds.join(', ')}`)
-      } else {
-        ensureDefaultLightweightModelLoaded()
-          .then((result) => {
-            if (result.loaded && result.modelId) {
-              console.log(`[AinCore] 默认轻量模型已就绪: ${result.modelId}`)
-            } else {
-              console.log(`[AinCore] 跳过默认模型加载: ${result.reason || '无可用模型'}`)
-            }
-          })
-          .catch((err) => {
-            console.warn('[AinCore] 默认轻量模型加载失败:', err)
-          })
-      }
-    })
-    .catch((err) => {
-      console.warn('[AinCore] 模型预加载失败:', err)
+    // Defer non-critical initialization to improve cold start time
+    setImmediate(() => {
+      loadAuditLog()
+      initTokenPersistence(join(app.getPath('userData'), 'github-token'))
     })
 
-  // Register IPC handlers for the management UI
-  registerAuthIpcHandlers()
+    // Start the UDS JSON-RPC server used by the desktop app and SDK clients.
+    await startServer()
 
-  // Create system tray
-  createTray()
+    // Start model scheduler (idle unload + memory pressure)
+    startScheduler()
 
-  // Create main window (show it — Core is now a visible admin dashboard by default)
-  createWindow()
-  mainWindow?.show()
+    // Preload lightweight/resident models
+    preloadResidentModels()
+      .then((loadedIds) => {
+        if (loadedIds.length > 0) {
+          console.log(`[AinCore] 模型已预加载: ${loadedIds.join(', ')}`)
+        } else {
+          ensureDefaultLightweightModelLoaded()
+            .then((result) => {
+              if (result.loaded && result.modelId) {
+                console.log(`[AinCore] 默认轻量模型已就绪: ${result.modelId}`)
+              } else {
+                console.log(`[AinCore] 跳过默认模型加载: ${result.reason || '无可用模型'}`)
+              }
+            })
+            .catch((err) => {
+              console.warn('[AinCore] 默认轻量模型加载失败:', err)
+            })
+        }
+      })
+      .catch((err) => {
+        console.warn('[AinCore] 模型预加载失败:', err)
+      })
 
-  // Initialize auto-updater (only in packaged builds)
-  initAutoUpdater().catch((err) => {
-    console.warn('[AinCore] Auto-updater 初始化失败:', err)
-  })
+    // Register IPC handlers for the management UI
+    registerAuthIpcHandlers()
 
-  console.log(`[AinCore] 服务已启动，socket: ${SOCKET_PATH}`)
+    // Create system tray
+    createTray()
+
+    // Create main window (show it — Core is now a visible admin dashboard by default)
+    createWindow()
+    mainWindow?.show()
+
+    // Initialize auto-updater (only in packaged builds)
+    initAutoUpdater().catch((err) => {
+      console.warn('[AinCore] Auto-updater 初始化失败:', err)
+    })
+
+    console.log(`[AinCore] 服务已启动，socket: ${SOCKET_PATH}`)
+  } catch (err) {
+    console.error('[AinCore] whenReady initialization failed:', err)
+    // Still create the window so the user can see the UI even if some features are unavailable
+    registerAuthIpcHandlers()
+    createWindow()
+    mainWindow?.show()
+  }
 })
 
 app.on('window-all-closed', () => {

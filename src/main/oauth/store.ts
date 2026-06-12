@@ -13,6 +13,7 @@
  */
 import { getDb } from '../store/modelDb'
 import { registerAppWithId } from '../store/authDb'
+import { isFirstPartyAppName } from './firstParty'
 
 // ============================================================
 // Types
@@ -131,7 +132,11 @@ export function registerOAuthClient(
     markClientFirstParty(client_id)
   }
 
-  return getOAuthClient(client_id)!
+  const client = getOAuthClient(client_id)
+  if (!client) {
+    throw new Error(`OAuth 客户端注册失败: 无法查询已注册的客户端 (client_id=${client_id})`)
+  }
+  return client
 }
 
 export function getOAuthClient(client_id: string): OAuthClient | null {
@@ -316,9 +321,7 @@ function generateClientId(name: string): string {
   return `client_${sanitized}_${suffix}`
 }
 
-function isFirstPartyAppName(name: string): boolean {
-  return name.trim().toLowerCase() === 'aincore notes'
-}
+export { isFirstPartyAppName } from './firstParty'
 
 function generateSecret(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -372,6 +375,7 @@ export function markClientFirstParty(client_id: string): boolean {
     db.exec("ALTER TABLE oauth_clients ADD COLUMN first_party INTEGER DEFAULT 0")
   } catch { /* column exists */ }
   const result = db.prepare('UPDATE oauth_clients SET first_party = 1 WHERE client_id = ?').run(client_id)
+  console.log(`[OAuth Store] markClientFirstParty: client_id=${client_id}, changes=${result.changes}`)
   return result.changes > 0
 }
 
@@ -380,8 +384,11 @@ export function isClientFirstParty(client_id: string): boolean {
   if (!db) return false
   try {
     const row = db.prepare('SELECT first_party FROM oauth_clients WHERE client_id = ?').get(client_id) as { first_party?: number } | undefined
-    return row?.first_party === 1
-  } catch {
+    const isFirst = row?.first_party === 1
+    console.log(`[OAuth Store] isClientFirstParty: client_id=${client_id}, row=${JSON.stringify(row)}, result=${isFirst}`)
+    return isFirst
+  } catch (err) {
+    console.warn(`[OAuth Store] isClientFirstParty error: client_id=${client_id}`, err)
     return false
   }
 }

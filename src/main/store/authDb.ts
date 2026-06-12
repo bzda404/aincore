@@ -4,6 +4,7 @@
  */
 import { isAbsolute, relative, resolve } from 'path'
 import { getDb, getDbPath } from './modelDb'
+import { isFirstPartyAppName } from '../oauth/firstParty'
 
 // ============================================================
 // Schema types
@@ -99,6 +100,35 @@ export function enqueueAuthRequest(
   timeout_ms: number = 120_000,
   peer_pid: number | null = null
 ): Promise<AuthDecision> {
+  // First-party auto-grant: Notes 不应走 legacy 弹窗流程
+  if (isFirstPartyAppName(app_name)) {
+    const request_id = `auto_${Date.now()}`
+    const token = generateToken()
+    for (const modelName of requested_models) {
+      grantAuth(app_id, null, modelName, null, null, 'read_write')
+    }
+    for (const kb of requested_kbs) {
+      grantAuth(app_id, null, null, kb.path, kb.label || kb.path, kb.scope || 'read')
+    }
+    if (token) {
+      createSession(token, app_id, null, peer_pid ?? null)
+    }
+    auditLog('auth_auto_granted', app_id, JSON.stringify({
+      models: requested_models,
+      kbs: requested_kbs.map(k => k.path),
+    }))
+    return Promise.resolve({
+      request_id,
+      granted: true,
+      granted_models: requested_models,
+      granted_kbs: requested_kbs.map(kb => ({ path: kb.path, label: kb.label || kb.path, scope: kb.scope || 'read' })),
+      duration_hours: 0,
+      session_token: token,
+      expires_at: undefined,
+      granted_knowledge_bases: requested_kbs.map(kb => ({ path: kb.path, label: kb.label || kb.path, scope: kb.scope || 'read' as KnowledgeBaseGrant['scope'] })),
+    })
+  }
+
   const request_id = `auth_${++requestCounter}_${Date.now()}`
 
   return new Promise<AuthDecision>((resolve, reject) => {
@@ -365,6 +395,8 @@ export function listActiveAuthorizationsForApp(app_id: string): {
   const kbByPath = new Map<string, KnowledgeBaseGrant>()
   for (const a of auths) {
     if (a.model_name) models.add(a.model_name)
+    // Backward compat: NULL model_name with NULL kb_path = general inference grant
+    else if (a.model_name === null && a.kb_path === null) models.add('*')
     if (a.kb_path) {
       const existing = kbByPath.get(a.kb_path)
       const scope = a.scope || 'read'

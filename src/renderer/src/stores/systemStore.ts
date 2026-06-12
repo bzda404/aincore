@@ -21,6 +21,11 @@ export const useSystemStore = defineStore('system', () => {
   const memFallback = ref(false)
   const isLoading = ref(true)
   const lastError = ref<string | null>(null)
+  const inferenceTelemetry = ref<{
+    lastLatencyMs: number | null
+    lastTokensPerSecond: number | null
+    updatedAt: string | null
+  }>({ lastLatencyMs: null, lastTokensPerSecond: null, updatedAt: null })
 
   // Getters
   const modelReady = computed(() => loadedModelId.value !== null && engineStatus.value === 'ready')

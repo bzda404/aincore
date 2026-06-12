@@ -57,7 +57,7 @@ const OOM_PATTERNS = [
 export function initEngine(): void {
   const resourcesPath = app.isPackaged
     ? process.resourcesPath
-    : join(__dirname, '..', '..', '..', '..', 'resources')
+    : join(__dirname, '..', '..', 'resources')
 
   const platform = process.platform
   const binName = platform === 'win32' ? 'llama-server.exe' : 'llama-server'
@@ -384,7 +384,7 @@ async function startMockEngine(port: number, model: ModelInfo): Promise<void> {
       req.on('data', chunk => { body += chunk.toString() })
       req.on('end', () => {
         const prompt = extractPrompt(body)
-        const content = `AinCore 已通过本地授权中心调用共享模型 ${model.name}。${prompt ? `收到：${prompt.slice(0, 60)}` : ''}`
+        const content = `[Mock 模式] 已收到请求${prompt ? `：${prompt.slice(0, 100)}` : ''}。当前运行的是 Mock 引擎，请安装 llama-server 以获得真实 AI 推理能力。`
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify({
           id: `mock-${Date.now()}`,
@@ -413,9 +413,10 @@ async function startMockEngine(port: number, model: ModelInfo): Promise<void> {
 
 function extractPrompt(body: string): string {
   try {
-    const parsed = JSON.parse(body) as { messages?: Array<{ content?: string }>; prompt?: string }
+    const parsed = JSON.parse(body) as { messages?: Array<{ role?: string; content?: string }>; prompt?: string }
     if (typeof parsed.prompt === 'string') return parsed.prompt
-    return parsed.messages?.map(m => m.content || '').filter(Boolean).join(' ') || ''
+    // Only extract user messages (skip system/assistant)
+    return parsed.messages?.filter(m => m.role === 'user').map(m => m.content || '').filter(Boolean).join('\n') || ''
   } catch {
     return ''
   }

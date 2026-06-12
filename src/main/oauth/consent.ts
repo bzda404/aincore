@@ -51,7 +51,20 @@ export function enqueueOAuthConsent(
   const requestId = `oauth_${++consentCounter}_${Date.now()}`
 
   // First-party clients (e.g., AinCore Notes) skip the consent popup
-  if (isClientFirstParty(clientId)) {
+  // Primary check: isClientFirstParty (reads first_party column)
+  // Fallback: client name matches known first-party apps (covers memDb edge cases)
+  let isFirstParty = isClientFirstParty(clientId)
+  if (!isFirstParty) {
+    const normalizedName = clientName.trim().toLowerCase()
+    if (normalizedName === 'aincore notes') {
+      isFirstParty = true
+      console.log(
+        `[OAuth Consent] First-party detected by name fallback: client=${clientId} name="${clientName}"`,
+      )
+    }
+  }
+
+  if (isFirstParty) {
     console.log(
       `[OAuth Consent] First-party auto-consent: client=${clientId} ` +
         `scopes="${scopes}" requestId=${requestId}`,
@@ -150,8 +163,10 @@ function ensureScopeGrants(clientId: string, scopes: string): void {
   const scopeList = parseScopeString(scopes)
   const active = listAuthorizations(clientId, true)
 
-  if (scopeList.includes('inference:read') && !active.some(auth => auth.model_name === null && auth.kb_path === null)) {
-    grantAuth(clientId, null, null, null, null, 'read')
+  // General inference grant — use '*' wildcard so listActiveAuthorizationsForApp
+  // can detect it (NULL model_name is invisible to the UI grant counter).
+  if (scopeList.includes('inference:read') && !active.some(auth => (auth.model_name === '*' || auth.model_name === null) && auth.kb_path === null)) {
+    grantAuth(clientId, '*', '*', null, null, 'read')
   }
 
   const defaultKbPath = process.env.AINCORE_NOTES_KB_PATH || ''

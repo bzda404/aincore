@@ -29,14 +29,26 @@ const LANGUAGE_NAMES: Record<string, string> = {
 }
 
 // ============================================================
+// Language detection helper
+// ============================================================
+
+function containsChinese(text: string): boolean {
+  return /\p{Script=Han}/u.test(text)
+}
+
+// ============================================================
 // Public API
 // ============================================================
 
 /**
  * Build a system prompt string from a user profile.
  * Returns null if the profile is effectively empty.
+ * When existingSystemMessage contains Chinese, generates Chinese prompts.
  */
-export function buildProfilePrompt(profile: UserProfile): string | null {
+export function buildProfilePrompt(
+  profile: UserProfile,
+  existingSystemMessage: string | null = null,
+): string | null {
   const parts: string[] = []
 
   if (
@@ -48,19 +60,31 @@ export function buildProfilePrompt(profile: UserProfile): string | null {
     return null
   }
 
-  parts.push('You are a helpful AI assistant.')
+  const isChinese = existingSystemMessage ? containsChinese(existingSystemMessage) : false
+
+  if (isChinese) {
+    parts.push('你是一个有用的AI助手。')
+  } else {
+    parts.push('You are a helpful AI assistant.')
+  }
 
   if (profile.display_name) {
-    parts.push(`The user's name is ${profile.display_name}.`)
+    parts.push(isChinese
+      ? `用户名称是 ${profile.display_name}。`
+      : `The user's name is ${profile.display_name}.`)
   }
 
   if (profile.language) {
     const langName = LANGUAGE_NAMES[profile.language] || profile.language
-    parts.push(`Always respond in ${langName}.`)
+    parts.push(isChinese
+      ? `请始终使用${langName}回复。`
+      : `Always respond in ${langName}.`)
   }
 
   if (profile.communication_style) {
-    parts.push(`Use a ${profile.communication_style} communication style.`)
+    parts.push(isChinese
+      ? `使用${profile.communication_style}的沟通风格。`
+      : `Use a ${profile.communication_style} communication style.`)
   }
 
   if (profile.custom_instructions) {
@@ -111,11 +135,17 @@ export function maybeInjectProfile(params: Record<string, unknown>): Record<stri
   }
 
   const profile = getUserProfile()
-  const prompt = buildProfilePrompt(profile)
-  if (!prompt) return params
 
+  // Extract existing system message for language detection
   const messages = params.messages as Array<{ role: string; content: string }> | undefined
   if (!Array.isArray(messages)) return params
+
+  const existingSystemMsg = messages.length > 0 && messages[0].role === 'system'
+    ? messages[0].content
+    : null
+
+  const prompt = buildProfilePrompt(profile, existingSystemMsg)
+  if (!prompt) return params
 
   return {
     ...params,

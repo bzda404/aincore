@@ -171,6 +171,14 @@ export const useModelStore = defineStore('models', () => {
     downloadStatus.value = ''
   }
 
+  async function fetchRecommendedInfo() {
+    try {
+      recommendedInfo.value = await window.hub.getRecommendedModels()
+    } catch {
+      recommendedInfo.value = null
+    }
+  }
+
   function cleanup() {
     if (unsubDownload) {
       unsubDownload()
