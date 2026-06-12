@@ -1,6 +1,6 @@
 {
   "name": "aincore",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "description": "AinCore — 本地 AI 计算平台核心枢纽：llama.cpp 模型推理、OAuth 2.0 PKCE 授权、UDS JSON-RPC 服务、隐私哨兵与 AI 记忆系统",
   "main": "./out/main/index.js",
   "private": true,
