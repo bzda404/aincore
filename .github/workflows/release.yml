@@ -10,8 +10,8 @@ permissions:
   id-token: write
 
 env:
-  # Pin a specific llama.cpp release for reproducible builds.
-  # Update this when upgrading the inference engine.
+  # Pin a specific llama.cpp release tag for reproducible builds.
+  # Set to 'latest' to auto-detect from GitHub's redirect, or pin e.g. 'b9611'.
   LLAMA_CPP_RELEASE: 'latest'
 
 jobs:
@@ -54,23 +54,47 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Download llama.cpp binaries (not stored in git due to size)
+      # Download llama.cpp binaries (not stored in git due to size).
+      # Uses GitHub's /releases/latest redirect to resolve the tag, then downloads
+      # the platform-specific archive. Falls back to pinned LLAMA_CPP_RELEASE.
       - name: Download llama.cpp binaries
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ "${{ env.LLAMA_CPP_RELEASE }}" = "latest" ]; then
-            RELEASE_TAG=$(curl -sL "https://api.github.com/repos/ggerganov/llama.cpp/releases/latest" | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')
+          set -euo pipefail
+
+          if [ "${LLAMA_CPP_RELEASE}" = "latest" ]; then
+            # Resolve latest tag via GitHub's redirect (no API rate limit)
+            RELEASE_TAG=$(curl -fsSL -o /dev/null -w '%{url_effective}' \
+              "https://github.com/ggerganov/llama.cpp/releases/latest" \
+              | sed 's|.*/tag/||')
           else
-            RELEASE_TAG="${{ env.LLAMA_CPP_RELEASE }}"
+            RELEASE_TAG="${LLAMA_CPP_RELEASE}"
           fi
-          echo "Downloading llama.cpp ${RELEASE_TAG}"
+
+          if [ -z "${RELEASE_TAG}" ]; then
+            echo "::error::Failed to resolve llama.cpp release tag"
+            exit 1
+          fi
+
+          echo "Resolved llama.cpp release: ${RELEASE_TAG}"
           ASSET="llama-${RELEASE_TAG}-${{ matrix.asset_name }}"
           ASSET_URL="https://github.com/ggerganov/llama.cpp/releases/download/${RELEASE_TAG}/${ASSET}"
-          echo "Asset URL: ${ASSET_URL}"
+          echo "Downloading: ${ASSET_URL}"
 
           ARCHIVE_PATH="${RUNNER_TEMP}/llama-bin"
           mkdir -p "resources/binaries/${{ matrix.bin_dir }}"
-          curl -sL "${ASSET_URL}" -o "${ARCHIVE_PATH}"
+
+          HTTP_CODE=$(curl -fSL -o "${ARCHIVE_PATH}" -w '%{http_code}' "${ASSET_URL}")
+          echo "Download HTTP status: ${HTTP_CODE}"
+
+          FILE_SIZE=$(wc -c < "${ARCHIVE_PATH}")
+          echo "Downloaded file size: ${FILE_SIZE} bytes"
+          if [ "${FILE_SIZE}" -lt 1000 ]; then
+            echo "::error::Downloaded file too small, likely a failed download"
+            exit 1
+          fi
 
           if [[ "${{ matrix.asset_name }}" == *.tar.gz ]]; then
             tar xzf "${ARCHIVE_PATH}" -C "resources/binaries/${{ matrix.bin_dir }}"
