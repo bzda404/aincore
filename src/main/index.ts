@@ -44,10 +44,10 @@ async function openNotesApp(): Promise<{ success: boolean; mode: 'dev' | 'extern
   }
 
   const candidates = [
-    join(app.getAppPath(), '..', 'hearthnotes'),
-    join(app.getAppPath(), '..', '..', 'hearthnotes'),
-    join(process.cwd(), '..', 'hearthnotes'),
-    join(process.cwd(), 'packages', 'hearthnotes'),
+    join(app.getAppPath(), '..', 'aincore-notes'),
+    join(app.getAppPath(), '..', '..', 'aincore-notes'),
+    join(process.cwd(), '..', 'aincore-notes'),
+    join(process.cwd(), 'packages', 'aincore-notes'),
   ]
   const devNotesDir = candidates.find(candidate => existsSync(join(candidate, 'package.json'))) || ''
   if (!app.isPackaged && existsSync(join(devNotesDir, 'package.json'))) {
