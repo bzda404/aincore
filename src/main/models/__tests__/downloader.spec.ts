@@ -8,19 +8,31 @@ vi.mock('electron', () => ({
 }))
 
 // Mock fs
-vi.mock('fs', () => ({
-  createWriteStream: vi.fn(() => ({
-    write: vi.fn((_chunk: any, cb: any) => cb?.()),
-    end: vi.fn(),
-    close: vi.fn((cb: any) => cb?.()),
-    on: vi.fn(),
-  })),
-  existsSync: vi.fn(() => false),
-  mkdirSync: vi.fn(),
-  statSync: vi.fn(() => ({ size: 1024 })),
-  unlinkSync: vi.fn(),
-  readFileSync: vi.fn(() => Buffer.from('test content')),
-}))
+vi.mock('fs', () => {
+  const { Readable } = require('stream')
+  return {
+    createWriteStream: vi.fn(() => ({
+      write: vi.fn((_chunk: any, cb: any) => cb?.()),
+      end: vi.fn(),
+      close: vi.fn((cb: any) => cb?.()),
+      on: vi.fn(),
+    })),
+    createReadStream: vi.fn(() => {
+      const readable = new Readable({
+        read() {
+          this.push(Buffer.from('test content'))
+          this.push(null)
+        },
+      })
+      return readable
+    }),
+    existsSync: vi.fn(() => false),
+    mkdirSync: vi.fn(),
+    statSync: vi.fn(() => ({ size: 1024 })),
+    unlinkSync: vi.fn(),
+    readFileSync: vi.fn(() => Buffer.from('test content')),
+  }
+})
 
 vi.mock('fs/promises', () => ({
   readFile: vi.fn(() => Promise.resolve(Buffer.from('test content'))),
