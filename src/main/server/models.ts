@@ -3,6 +3,7 @@
  * public 方法供第三方 SDK 使用并由 server/index.ts 校验 session_token；
  * internal.* 方法供 AinCore 桌面主进程使用，不暴露给 SDK。
  */
+import { app } from 'electron'
 import { statSync } from 'fs'
 import { listModels, getModel, deleteModel, addModel } from '../store/modelDb'
 import { getLoadedEngine, loadModel, unloadModel } from '../engine/llamaCpp'
@@ -20,7 +21,7 @@ export function registerModelRoutes(registerRoute: RegisterRoute): void {
     const engine = getLoadedEngine()
     return {
       status: 'ok',
-      version: '1.0.0',
+      version: app.getVersion(),
       transport: TRANSPORT,
       socketPath: SOCKET_PATH,
       port: null,

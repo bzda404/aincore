@@ -45,6 +45,17 @@ type RegisterRoute = (
 const tokenFailures = new Map<string, { count: number; cooldownUntil: number }>()
 const MAX_TOKEN_FAILURES = 5
 const COOLDOWN_MS = 30_000
+const CLEANUP_INTERVAL_MS = 5 * 60_000
+
+// Periodic cleanup of expired entries to prevent unbounded memory growth
+setInterval(() => {
+  const now = Date.now()
+  for (const [clientId, record] of tokenFailures) {
+    if (record.cooldownUntil <= now && record.count === 0) {
+      tokenFailures.delete(clientId)
+    }
+  }
+}, CLEANUP_INTERVAL_MS).unref()
 
 function checkBruteForce(clientId: string): void {
   const record = tokenFailures.get(clientId)

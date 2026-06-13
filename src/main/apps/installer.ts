@@ -8,7 +8,7 @@
  *   icon.png        — 应用图标 (可选)
  *   bundle/         — 应用代码
  */
-import { createWriteStream, existsSync, mkdirSync, rmSync, readFileSync } from 'fs'
+import { createWriteStream, existsSync, mkdirSync, rmSync, readFileSync, createReadStream } from 'fs'
 import { join, basename } from 'path'
 import { app } from 'electron'
 import { createHash } from 'crypto'
@@ -141,11 +141,16 @@ function getTempDir(): string {
 }
 
 /**
- * 计算文件 SHA256
+ * 计算文件 SHA256（流式，避免将整个大文件读入内存）
  */
-export function computeSHA256(filePath: string): string {
-  const buffer = readFileSync(filePath)
-  return createHash('sha256').update(buffer).digest('hex')
+export async function computeSHA256(filePath: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const hash = createHash('sha256')
+    const stream = createReadStream(filePath)
+    stream.on('data', (chunk) => hash.update(chunk))
+    stream.on('end', () => resolve(hash.digest('hex')))
+    stream.on('error', reject)
+  })
 }
 
 /**
@@ -198,7 +203,7 @@ export async function installFromFile(
 
   // 1. SHA256 校验
   if (expectedChecksum) {
-    const actual = computeSHA256(filePath)
+    const actual = await computeSHA256(filePath)
     if (actual !== expectedChecksum.toLowerCase()) {
       return { success: false, error: `SHA256 校验失败: 期望 ${expectedChecksum}, 实际 ${actual}` }
     }

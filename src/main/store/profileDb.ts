@@ -115,8 +115,8 @@ export function updateUserProfile(partial: Partial<UserProfile>): UserProfile {
     sets.push("updated_at = datetime('now')")
     try {
       db.prepare(`UPDATE user_profile SET ${sets.join(', ')} WHERE id = 1`).run(...values)
-    } catch {
-      // best effort
+    } catch (err) {
+      console.warn('[Profile DB] 更新用户画像失败:', err)
     }
   }
 

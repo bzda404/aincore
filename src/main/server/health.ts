@@ -1,6 +1,7 @@
 /**
  * 健康检查路由（UDS JSON-RPC）
  */
+import { app } from 'electron'
 import { SOCKET_PATH, TRANSPORT } from './transport'
 
 type RegisterRoute = (method: string, path: string, handler: (params: Record<string, unknown>) => Promise<unknown>) => void
@@ -9,7 +10,7 @@ export function registerHealthRoutes(registerRoute: RegisterRoute): void {
   registerRoute('GET', '/health', async() => {
     return {
       status: 'ok',
-      version: '1.0.0',
+      version: app.getVersion(),
       name: 'AinCore',
       port: null,
       transport: TRANSPORT,
@@ -18,6 +19,6 @@ export function registerHealthRoutes(registerRoute: RegisterRoute): void {
   })
 
   registerRoute('GET', '/version', async() => {
-    return { version: '1.0.0', transport: TRANSPORT, socketPath: SOCKET_PATH }
+    return { version: app.getVersion(), transport: TRANSPORT, socketPath: SOCKET_PATH }
   })
 }

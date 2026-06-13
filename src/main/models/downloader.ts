@@ -12,7 +12,7 @@
  *   - 取消下载
  *   - SHA256 校验
  */
-import { createWriteStream, existsSync, mkdirSync, statSync, unlinkSync } from 'fs'
+import { createWriteStream, createReadStream, existsSync, mkdirSync, statSync, unlinkSync } from 'fs'
 import { join } from 'path'
 import { app } from 'electron'
 import { pipeline } from 'stream/promises'
@@ -88,14 +88,16 @@ export function resolveDownloadUrl(sourceType: ModelSourceType, sourceUrl: strin
 }
 
 /**
- * 计算文件 SHA256
+ * 计算文件 SHA256（流式，避免将整个大文件读入内存）
  */
 export async function computeFileSHA256(filePath: string): Promise<string> {
-  const { readFile } = await import('fs/promises')
-  const buffer = await readFile(filePath)
-  const hash = createHash('sha256')
-  hash.update(buffer)
-  return hash.digest('hex')
+  return new Promise((resolve, reject) => {
+    const hash = createHash('sha256')
+    const stream = createReadStream(filePath)
+    stream.on('data', (chunk) => hash.update(chunk))
+    stream.on('end', () => resolve(hash.digest('hex')))
+    stream.on('error', reject)
+  })
 }
 
 /**

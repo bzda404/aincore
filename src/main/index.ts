@@ -414,6 +414,7 @@ app.whenReady().then(async() => {
     initOAuthDb()
     initAppStore()
     initAuditDb()
+    initProfileDb()
     migrateModelRegistry()
 
     // Initialize llama.cpp engine manager

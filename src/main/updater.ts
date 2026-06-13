@@ -111,6 +111,8 @@ export function installAndRestart(): void {
     // Dynamic import not needed — autoUpdater is synchronous here
     import('electron-updater').then(({ autoUpdater }) => {
       autoUpdater.quitAndInstall(false, true)
+    }).catch((err) => {
+      console.error('[AutoUpdater] 安装失败:', err)
     })
   } catch (err) {
     console.error('[AutoUpdater] 安装失败:', err)

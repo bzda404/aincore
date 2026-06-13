@@ -2,7 +2,7 @@
  * llama.cpp 引擎管理
  * 管理 llama-server 子进程的生命周期
  */
-import { spawn, execSync, type ChildProcess } from 'child_process'
+import { spawn, execSync, exec, type ChildProcess } from 'child_process'
 import { createServer, type Server } from 'net'
 import { join } from 'path'
 import { existsSync } from 'fs'
@@ -244,25 +244,19 @@ export function killEngineProcess(): void {
 }
 
 /**
- * 获取 llama-server 进程的 RSS 内存 (bytes)
+ * 获取 llama-server 进程的 RSS 内存 (bytes) — 异步执行，不阻塞事件循环
  */
-export function getEngineProcessRSS(): number {
+export async function getEngineProcessRSS(): Promise<number> {
   if (!state.process || !state.process.pid) return 0
-  try {
-    if (process.platform === 'win32') {
-      // Windows: use tasklist (approximate)
-      return 0
-    }
-    const output = execSync(`ps -o rss= -p ${state.process.pid}`, {
-      encoding: 'utf-8',
-      timeout: 2000,
-    }).trim()
-    // ps reports RSS in KB
-    const rssKb = parseInt(output, 10)
-    return Number.isFinite(rssKb) ? rssKb * 1024 : 0
-  } catch {
-    return 0
-  }
+  if (process.platform === 'win32') return 0
+
+  return new Promise((resolve) => {
+    exec(`ps -o rss= -p ${state.process!.pid}`, { encoding: 'utf-8', timeout: 2000 }, (err, stdout) => {
+      if (err) { resolve(0); return }
+      const rssKb = parseInt(stdout.trim(), 10)
+      resolve(Number.isFinite(rssKb) ? rssKb * 1024 : 0)
+    })
+  })
 }
 
 // ============================================================
@@ -358,8 +352,8 @@ async function warmupModel(): Promise<void> {
       }),
       signal: AbortSignal.timeout(10000),
     })
-  } catch {
-    // Warmup failure is non-critical
+  } catch (err) {
+    console.warn('[Engine] 模型 warmup 请求失败 (非致命):', err)
   }
 }
 

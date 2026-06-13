@@ -600,8 +600,8 @@ function auditLog(event: string, app_id: string, details: string): void {
     db.prepare(
       'INSERT INTO audit_log (event, app_id, details) VALUES (?, ?, ?)'
     ).run(event, app_id, details)
-  } catch {
-    // Audit log is best-effort; don't fail the operation
+  } catch (err) {
+    console.warn('[Auth DB] 审计日志写入失败:', err)
   }
 }
 

@@ -283,7 +283,7 @@ async function checkMemoryPressure(): Promise<void> {
   const nodeHeapUsed = nodeMemory.heapUsed
 
   // llama-server process RSS
-  const llamaRSS = getEngineProcessRSS()
+  const llamaRSS = await getEngineProcessRSS()
 
   // Total memory used by Core
   const totalUsed = nodeHeapUsed + llamaRSS
